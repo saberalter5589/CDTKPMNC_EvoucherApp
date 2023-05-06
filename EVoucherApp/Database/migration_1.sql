@@ -257,7 +257,14 @@ INSERT INTO public.voucher_type(
 	voucher_type_id, voucher_type_code, voucher_type_name, is_deleted, created_at, updated_at, created_user_id, updated_user_id)
 	VALUES (0, 'VOUCHER_TYPE_DEFAULT', 'Voucher Type default', false, '2023-01-01 00:00', '2023-01-01 00:00', 0, 0);
 
-
+INSERT INTO public.game(
+	game_id, game_code, game_name, description, note, is_deleted, created_at, updated_at, created_user_id, updated_user_id)
+	VALUES 
+		(1, 'G1', 'Game 1', 'Game 1 description', 'Game 1 note', 'false', '2023-01-01 00:00', '2023-01-01 00:00', 0, 0),
+		(2, 'G2', 'Game 2', 'Game 2 description', 'Game 2 note', 'false', '2023-01-01 00:00', '2023-01-01 00:00', 0, 0),
+		(3, 'G3', 'Game 3', 'Game 3 description', 'Game 3 note', 'false', '2023-01-01 00:00', '2023-01-01 00:00', 0, 0),
+		(4, 'G4', 'Game 4', 'Game 4 description', 'Game 4 note', 'false', '2023-01-01 00:00', '2023-01-01 00:00', 0, 0)
+		;
 
 
 

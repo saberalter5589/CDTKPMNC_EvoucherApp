@@ -32,7 +32,7 @@ public class EUserRepositoryCustomImpl implements EUserRepositoryCustom {
         params.put("userTypeId", UserType.CUSTOMER);
 
         if(request.getId() != null){
-            sql.append("AND eu.user_id =:id");
+            sql.append("AND eu.user_id =:id ");
             params.put("id", request.getId());
         }
 

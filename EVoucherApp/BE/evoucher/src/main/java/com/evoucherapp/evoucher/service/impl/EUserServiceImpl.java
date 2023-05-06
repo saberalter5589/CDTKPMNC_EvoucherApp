@@ -14,6 +14,7 @@ import com.evoucherapp.evoucher.entity.Customer;
 import com.evoucherapp.evoucher.entity.EUser;
 import com.evoucherapp.evoucher.entity.Partner;
 import com.evoucherapp.evoucher.entity.PartnerType;
+import com.evoucherapp.evoucher.exception.DataExistException;
 import com.evoucherapp.evoucher.exception.NoDataFoundException;
 import com.evoucherapp.evoucher.exception.UnAuthorizationException;
 import com.evoucherapp.evoucher.mapper.CustomerDxo;
@@ -62,7 +63,7 @@ public class EUserServiceImpl implements EUserService {
         EUser user = eUserRepository.findByUserName(request.getUserName());
         if(user != null){
             MessageInfo messageInfo = MessageUtil.formatMessage(10002, "username");
-            throw new NoDataFoundException(messageInfo);
+            throw new DataExistException(messageInfo);
         }
 
         // Create new user

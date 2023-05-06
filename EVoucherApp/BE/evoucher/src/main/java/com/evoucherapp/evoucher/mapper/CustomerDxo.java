@@ -16,13 +16,13 @@ public class CustomerDxo {
         List<CustomerDto> resultList = new ArrayList<>();
         if(!CommonUtil.isNullOrEmpty(dbObjList)){
             for(Object[] obj : dbObjList){
-                resultList.add(mapFromDbObtoCustomerDto(obj));
+                resultList.add(mapFromDbObjToCustomerDto(obj));
             }
         }
         return resultList;
     }
 
-    private static CustomerDto mapFromDbObtoCustomerDto(Object[] obj){
+    private static CustomerDto mapFromDbObjToCustomerDto(Object[] obj){
         if(obj == null){
             return null;
         }
