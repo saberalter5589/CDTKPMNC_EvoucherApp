@@ -40,4 +40,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         body.put("message", ex.getMessageInfo().getMessage());
         return new ResponseEntity<>(body, ex.getHttpStatus());
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> handleCityNotFoundException(
+            BadRequestException ex, WebRequest request) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessageInfo().getMessage());
+        return new ResponseEntity<>(body, ex.getHttpStatus());
+    }
 }

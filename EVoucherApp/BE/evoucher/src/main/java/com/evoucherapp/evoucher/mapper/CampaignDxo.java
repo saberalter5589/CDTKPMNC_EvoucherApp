@@ -1,9 +1,7 @@
 package com.evoucherapp.evoucher.mapper;
 
 import com.evoucherapp.evoucher.common.constant.DateTimeFormat;
-import com.evoucherapp.evoucher.dto.obj.BranchDto;
-import com.evoucherapp.evoucher.dto.obj.CampaignDto;
-import com.evoucherapp.evoucher.dto.obj.GameDto;
+import com.evoucherapp.evoucher.dto.obj.*;
 import com.evoucherapp.evoucher.util.CommonUtil;
 import com.evoucherapp.evoucher.util.DateTimeUtil;
 import com.evoucherapp.evoucher.util.ObjectUtil;
@@ -30,8 +28,11 @@ public class CampaignDxo {
         }
         CampaignDto dto = new CampaignDto();
         dto.setCampainId(obj[0] != null ? ObjectUtil.getValueOfLong(obj[0]) : null);
-        dto.setPartnerId(obj[1] != null ? ObjectUtil.getValueOfLong(obj[1]) : null);
-        dto.setPartnerName(obj[2] != null ? ObjectUtil.getValueOfString(obj[2]) : null);
+
+        PartnerDto partnerDto = new PartnerDto();
+        partnerDto.setUserId(obj[1] != null ? ObjectUtil.getValueOfLong(obj[1]) : null);
+        partnerDto.setPartnerName(obj[2] != null ? ObjectUtil.getValueOfString(obj[2]) : null);
+
         dto.setCampainCode(obj[3] != null ? ObjectUtil.getValueOfString(obj[3]) : null);
         dto.setCampainName(obj[4] != null ? ObjectUtil.getValueOfString(obj[4]) : null);
         dto.setDateStart(obj[5] != null ? DateTimeUtil.convertFromDateToString((Date)obj[5], DateTimeFormat.DATE): null);
@@ -56,8 +57,24 @@ public class CampaignDxo {
                 dto.getGameList().add(gameDto);
             }
         }
+
+        String voucherTemplateInfoStr = obj[11] != null ? ObjectUtil.getValueOfString(obj[11]) : null;
+        if(!CommonUtil.isNullOrWhitespace(voucherTemplateInfoStr)){
+            String[] voucherTemplateInfos = gameInfoStr.split(" , ");
+            for(String gameInfo : voucherTemplateInfos){
+                String[] infos = gameInfo.split("#");
+                String vtId = infos[0];
+                String vtCode = infos[1];
+                String vtName = infos[2];
+
+                VoucherTemplateDto vtDto = new VoucherTemplateDto();
+                vtDto.setVoucherTemplateId(Long.valueOf(vtId));
+                vtDto.setVoucherTemplateCode(vtCode);
+                vtDto.setVoucherTemplateName(vtName);
+                dto.getVoucherTemplateDtoList().add(vtDto);
+            }
+        }
+
         return dto;
     }
-
-
 }

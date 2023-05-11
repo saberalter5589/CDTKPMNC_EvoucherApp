@@ -7,4 +7,6 @@ public class PartnerDto extends UserDto {
     Long partnerTypeId;
     String partnerName;
     String partnerNote;
+    String partnerTypeCode;
+    String partnerTypeName;
 }

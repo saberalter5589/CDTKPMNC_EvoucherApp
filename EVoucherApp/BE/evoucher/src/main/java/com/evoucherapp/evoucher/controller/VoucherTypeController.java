@@ -29,14 +29,14 @@ public class VoucherTypeController {
     VoucherTypeService voucherTypeService;
 
     @PostMapping("/voucher-type/create")
-    public ResponseEntity<CreateVoucherTypeResponse> addBranch(@RequestBody CreateVoucherTypeRequest request){
+    public ResponseEntity<CreateVoucherTypeResponse> addVoucherType(@RequestBody CreateVoucherTypeRequest request){
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN));
         CreateVoucherTypeResponse response = voucherTypeService.createVoucherType(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/voucher-type/search")
-    public ResponseEntity<GetVoucherTypeListResponse> searchCustomer(@RequestBody GetVoucherTypeListRequest request){
+    public ResponseEntity<GetVoucherTypeListResponse> searchVoucherType(@RequestBody GetVoucherTypeListRequest request){
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER));
         GetVoucherTypeListResponse response = voucherTypeService.searchVoucherTypeList(request);
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -15,4 +15,11 @@ public class ObjectUtil {
         }
         return value;
     }
+
+    public static Boolean getValueOfBoolean(Object obj){
+        if(obj == null){
+            return false;
+        }
+        return (Boolean) obj;
+    }
 }

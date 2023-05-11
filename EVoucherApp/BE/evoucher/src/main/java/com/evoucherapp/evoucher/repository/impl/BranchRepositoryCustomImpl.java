@@ -21,7 +21,7 @@ public class BranchRepositoryCustomImpl implements BranchRepositoryCustom {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT br.branch_id, br.branch_name, br.address, br.phone, br.partner_id, pn.partner_name ");
         sql.append("FROM branch br ");
-        sql.append("LEFT JOIN partner pn ON br.partner_id = pn.partner_id ");
+        sql.append("LEFT JOIN partner pn ON br.partner_id = pn.partner_id AND pn.is_deleted = false ");
         sql.append("WHERE br.is_deleted = false ");
 
         if(request.getBranchId() != null){

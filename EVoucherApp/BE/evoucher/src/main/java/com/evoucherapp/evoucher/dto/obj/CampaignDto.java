@@ -9,8 +9,7 @@ import java.util.List;
 @Data
 public class CampaignDto {
     private Long campainId;
-    private Long partnerId;
-    private String partnerName;
+    private PartnerDto partner;
     private String campainCode;
     private String campainName;
     private String dateStart;
@@ -19,4 +18,5 @@ public class CampaignDto {
     private String note;
     private Long status;
     private List<GameDto> gameList = new ArrayList<>();
+    private List<VoucherTemplateDto> voucherTemplateDtoList = new ArrayList<>();
 }
