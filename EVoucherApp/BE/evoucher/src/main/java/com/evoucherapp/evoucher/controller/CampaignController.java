@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 
 @Controller
+@CrossOrigin(origins = "*")
 public class CampaignController {
     @Autowired
     AuthenticationService authenticationService;
@@ -42,7 +43,24 @@ public class CampaignController {
     }
 
     @GetMapping("/campaign/search")
-    public ResponseEntity<SearchCampaignResponse> searchCampaign(@RequestBody SearchCampaignRequest request){
+    public ResponseEntity<SearchCampaignResponse> searchCampaign(
+            @RequestHeader("userId") Long userId,
+            @RequestHeader("password") String password,
+            @RequestParam(value = "campaignId", required = false) Long campaignId,
+            @RequestParam(value="campaignCode", required = false) String campaignCode,
+            @RequestParam(value="campaignName", required = false) String campaignName,
+            @RequestParam(value="dateStart", required = false) String dateStart,
+            @RequestParam(value="dateEnd", required = false) String dateEnd,
+            @RequestParam(value="status", required = false) Long status){
+        SearchCampaignRequest request = new SearchCampaignRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        request.setCampainId(campaignId);
+        request.setCampaignCode(campaignCode);
+        request.setCampainName(campaignName);
+        request.setDateStart(dateStart);
+        request.setDateEnd(dateEnd);
+        request.setStatus(status);
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER, UserType.CUSTOMER));
         SearchCampaignResponse response = campaignService.searchCampaign(request);
         return new ResponseEntity<>(response, HttpStatus.OK);

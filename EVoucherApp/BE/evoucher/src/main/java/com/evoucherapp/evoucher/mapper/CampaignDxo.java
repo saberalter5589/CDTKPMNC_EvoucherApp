@@ -32,6 +32,7 @@ public class CampaignDxo {
         PartnerDto partnerDto = new PartnerDto();
         partnerDto.setUserId(obj[1] != null ? ObjectUtil.getValueOfLong(obj[1]) : null);
         partnerDto.setPartnerName(obj[2] != null ? ObjectUtil.getValueOfString(obj[2]) : null);
+        dto.setPartner(partnerDto);
 
         dto.setCampainCode(obj[3] != null ? ObjectUtil.getValueOfString(obj[3]) : null);
         dto.setCampainName(obj[4] != null ? ObjectUtil.getValueOfString(obj[4]) : null);

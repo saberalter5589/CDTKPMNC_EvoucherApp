@@ -12,6 +12,9 @@ public interface EUserRepository extends JpaRepository<EUser, Long>, EUserReposi
     @Query("SELECT u FROM EUser u WHERE u.userId =:userId AND u.password =:password AND u.isDeleted = false ")
     EUser findByUserIdAndPassword(Long userId, String password);
 
+    @Query("SELECT u FROM EUser u WHERE u.userName =:userName AND u.password =:password AND u.isDeleted = false ")
+    EUser findByUserNameAndPassword(String userName, String password);
+
     @Query("SELECT u FROM EUser u WHERE u.userId =:userId AND u.isDeleted = false ")
     EUser findByUserId(Long userId);
 }

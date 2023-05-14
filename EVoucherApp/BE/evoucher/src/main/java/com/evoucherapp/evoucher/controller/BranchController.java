@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 
 @Controller
+@CrossOrigin(origins = "*")
 public class BranchController {
     @Autowired
     AuthenticationService authenticationService;
@@ -33,7 +34,21 @@ public class BranchController {
     }
 
     @GetMapping("/branch/search")
-    public ResponseEntity<GetBranchListResponse> searchCustomer(@RequestBody GetBranchListRequest request){
+    public ResponseEntity<GetBranchListResponse> searchCustomer(@RequestHeader("userId") Long userId,
+                                                                @RequestHeader("password") String password,
+                                                                @RequestParam(value = "branchId", required = false) Long branchId,
+                                                                @RequestParam(value="branchName", required = false) String branchName,
+                                                                @RequestParam(value="phone", required = false) String phone,
+                                                                @RequestParam(value="address", required = false) String address,
+                                                                @RequestParam(value="partnerId", required = false) Long partnerId){
+        GetBranchListRequest request = new GetBranchListRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        request.setBranchId(branchId);
+        request.setBranchName(branchName);
+        request.setPhone(phone);
+        request.setAddress(address);
+        request.setPartnerId(partnerId);
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER));
         GetBranchListResponse response = branchService.searchBranch(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -47,7 +62,12 @@ public class BranchController {
     }
 
     @DeleteMapping("/branch/{id}")
-    public ResponseEntity<SuccessResponse> deleteCustomer(@PathVariable("id") Long id, @RequestBody BaseRequest request){
+    public ResponseEntity<SuccessResponse> deleteCustomer(@RequestHeader("userId") Long userId,
+                                                          @RequestHeader("password") String password,
+                                                          @PathVariable("id") Long id){
+        BaseRequest request = new BaseRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
         authenticationService.validateUser(request, Arrays.asList(UserType.PARTNER));
         branchService.deleteBranch(id, request);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);

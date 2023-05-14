@@ -20,7 +20,6 @@ import java.util.Arrays;
 public class UserController {
     @Autowired
     EUserService eUserService;
-
     @Autowired
     AuthenticationService authenticationService;
 

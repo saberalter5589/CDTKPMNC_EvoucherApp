@@ -15,4 +15,5 @@ public class CreateCampaignRequest extends BaseRequest {
     private String description;
     private String note;
     private List<Long> gameIds = new ArrayList<>();
+    private Long status;
 }

@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class BaseRequest {
-     private AuthDto authentication;
+     private AuthDto authentication = new AuthDto();
 }

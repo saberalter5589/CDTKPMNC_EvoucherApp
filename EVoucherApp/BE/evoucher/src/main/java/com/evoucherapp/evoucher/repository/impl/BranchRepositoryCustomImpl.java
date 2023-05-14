@@ -25,7 +25,7 @@ public class BranchRepositoryCustomImpl implements BranchRepositoryCustom {
         sql.append("WHERE br.is_deleted = false ");
 
         if(request.getBranchId() != null){
-            sql.append("AND br.branch_id =:id");
+            sql.append("AND br.branch_id =:id ");
             params.put("id", request.getBranchId());
         }
 
@@ -45,11 +45,11 @@ public class BranchRepositoryCustomImpl implements BranchRepositoryCustom {
         }
 
         if(request.getPartnerId() != null){
-            sql.append("AND br.partner_id =:partnerId");
+            sql.append("AND br.partner_id =:partnerId ");
             params.put("partnerId", request.getPartnerId());
         }
 
-        sql.append("ORDER BY br.updated_at DESC ");
+        sql.append(" ORDER BY br.updated_at DESC ");
         Query query = entityManager.createNativeQuery(sql.toString());
         QueryUtil.setParamsToQuery(query, params);
         List<Object[]> dbResult = query.getResultList();
