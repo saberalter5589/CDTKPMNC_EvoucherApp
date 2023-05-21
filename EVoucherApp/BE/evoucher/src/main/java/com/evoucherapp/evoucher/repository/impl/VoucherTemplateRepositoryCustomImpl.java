@@ -63,6 +63,11 @@ public class VoucherTemplateRepositoryCustomImpl implements VoucherTemplateRepos
             params.put("campainId", request.getCampaignId());
         }
 
+        if(request.getPartnerId() != null){
+            sql.append("AND cp.partner_id =:partnerId ");
+            params.put("partnerId", request.getPartnerId());
+        }
+
         if(!CommonUtil.isNullOrWhitespace(request.getVoucherTemplateCode())){
             sql.append("AND vtplt.voucher_template_code LIKE :templateCode ");
             params.put("templateCode", "%" + request.getVoucherTemplateCode() + "%");

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 
 @Controller
+@CrossOrigin(origins = "*")
 public class VoucherTemplateController {
     @Autowired
     AuthenticationService authenticationService;
@@ -37,7 +38,27 @@ public class VoucherTemplateController {
     }
 
     @GetMapping("/voucher-template/search")
-    public ResponseEntity<SearchVoucherTemplateResponse> searchVoucherTemplate(@RequestBody SearchVoucherTemplateRequest request){
+    public ResponseEntity<SearchVoucherTemplateResponse> searchVoucherTemplate(
+            @RequestHeader("userId") Long userId,
+            @RequestHeader("password") String password,
+            @RequestParam(value = "voucherTemplateId", required = false) Long voucherTemplateId,
+            @RequestParam(value = "voucherTypeId", required = false) Long voucherTypeId,
+            @RequestParam(value = "campaignId", required = false) Long campaignId,
+            @RequestParam(value = "voucherTemplateCode", required = false) String voucherTemplateCode,
+            @RequestParam(value = "voucherTemplateName", required = false) String voucherTemplateName,
+            @RequestParam(value = "dateStart", required = false) String dateStart,
+            @RequestParam(value = "dateStart", required = false) String dateEnd){
+        SearchVoucherTemplateRequest request = new SearchVoucherTemplateRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        request.setVoucherTemplateId(voucherTemplateId);
+        request.setVoucherTypeId(voucherTypeId);
+        request.setCampaignId(campaignId);
+        request.setVoucherTemplateCode(voucherTemplateCode);
+        request.setVoucherTemplateName(voucherTemplateName);
+        request.setDateStart(dateStart);
+        request.setDateEnd(dateEnd);
+
         authenticationService.validateUser(request, Arrays.asList( UserType.PARTNER));
         SearchVoucherTemplateResponse response = voucherTemplateService.searchVoucherTemplate(request);
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -30,7 +30,7 @@ public class CampaignRepositoryCustomImpl implements CampaignRepositoryCustom {
         sql.append("LEFT JOIN (" +
                 "SELECT " +
                 "cp.campain_id," +
-                "string_agg(gm.game_id || '#'|| gm.game_code || '#' || gm.game_name, ' , ') as games " +
+                "string_agg(gm.game_id || '#'|| gm.game_code || '#' || gm.game_name || '#' || gm.description, ' , ') as games " +
                 "FROM campain cp " +
                 "LEFT JOIN campain_game cpg ON cp.campain_id = cpg.campain_id AND cpg.is_deleted = false " +
                 "LEFT JOIN game gm ON gm.game_id = cpg.game_id " +

@@ -2,6 +2,7 @@ package com.evoucherapp.evoucher.service.impl;
 
 import com.evoucherapp.evoucher.common.constant.CampaignStatus;
 import com.evoucherapp.evoucher.common.constant.DateTimeFormat;
+import com.evoucherapp.evoucher.common.constant.UserType;
 import com.evoucherapp.evoucher.dto.MessageInfo;
 import com.evoucherapp.evoucher.dto.obj.CampaignDto;
 import com.evoucherapp.evoucher.dto.request.campaign.CreateCampaignRequest;
@@ -10,6 +11,7 @@ import com.evoucherapp.evoucher.dto.response.campaign.CreateCampaignResponse;
 import com.evoucherapp.evoucher.dto.response.campaign.SearchCampaignResponse;
 import com.evoucherapp.evoucher.entity.Campaign;
 import com.evoucherapp.evoucher.entity.CampaignGame;
+import com.evoucherapp.evoucher.entity.EUser;
 import com.evoucherapp.evoucher.exception.DataExistException;
 import com.evoucherapp.evoucher.exception.NoDataFoundException;
 import com.evoucherapp.evoucher.exception.UnAuthorizationException;
@@ -17,6 +19,7 @@ import com.evoucherapp.evoucher.mapper.CampaignDxo;
 import com.evoucherapp.evoucher.mapper.EntityDxo;
 import com.evoucherapp.evoucher.repository.CampaignGameRepository;
 import com.evoucherapp.evoucher.repository.CampaignRepository;
+import com.evoucherapp.evoucher.repository.EUserRepository;
 import com.evoucherapp.evoucher.service.CampaignService;
 import com.evoucherapp.evoucher.util.CommonUtil;
 import com.evoucherapp.evoucher.util.DateTimeUtil;
@@ -36,6 +39,8 @@ public class CampaignServiceImpl implements CampaignService {
     CampaignRepository campaignRepository;
     @Autowired
     CampaignGameRepository campaignGameRepository;
+    @Autowired
+    EUserRepository userRepository;
 
     @Override
     @Transactional
@@ -89,10 +94,6 @@ public class CampaignServiceImpl implements CampaignService {
             MessageInfo messageInfo = MessageUtil.formatMessage(10003);
             throw new UnAuthorizationException(messageInfo);
         }
-        if(!Objects.equals(campaign.getStatus(), CampaignStatus.NOT_START)){
-            MessageInfo messageInfo = MessageUtil.formatMessage(10003);
-            throw new UnAuthorizationException(messageInfo);
-        }
 
         String reqCode = request.getCampainCode();
         Campaign existCodeCampain = campaignRepository.findByCode(reqCode);
@@ -119,6 +120,12 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public SearchCampaignResponse searchCampaign(SearchCampaignRequest request) {
+        Long userId = request.getAuthentication().getUserId();
+        EUser user = userRepository.findByUserId(userId);
+        if(user.getUserTypeId().equals(UserType.PARTNER)){
+            request.setPartnerId(userId);
+        }
+
         List<Object[]> dbSearchResult = campaignRepository.searchCampaign(request);
         List<CampaignDto> dtoList = CampaignDxo.convertFromDbListToDtoList(dbSearchResult);
         SearchCampaignResponse response = new SearchCampaignResponse();

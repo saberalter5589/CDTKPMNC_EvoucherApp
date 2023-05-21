@@ -7,6 +7,7 @@ import com.evoucherapp.evoucher.dto.obj.VoucherDto;
 import com.evoucherapp.evoucher.dto.obj.VoucherTemplateDto;
 import com.evoucherapp.evoucher.dto.request.voucher.CreateVoucherRequest;
 import com.evoucherapp.evoucher.dto.request.voucher.SearchVoucherRequest;
+import com.evoucherapp.evoucher.dto.request.voucher.UseVoucherRequest;
 import com.evoucherapp.evoucher.dto.response.voucher.CreateVoucherResponse;
 import com.evoucherapp.evoucher.dto.response.voucher.SearchVoucherResponse;
 import com.evoucherapp.evoucher.dto.response.vouchertemplate.CreateVoucherTemplateResponse;
@@ -19,6 +20,7 @@ import com.evoucherapp.evoucher.mapper.VoucherTemplateDxo;
 import com.evoucherapp.evoucher.repository.*;
 import com.evoucherapp.evoucher.service.VoucherService;
 import com.evoucherapp.evoucher.util.CommonUtil;
+import com.evoucherapp.evoucher.util.DateTimeUtil;
 import com.evoucherapp.evoucher.util.MessageUtil;
 import org.apache.catalina.User;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -58,7 +60,7 @@ public class VoucherServiceImpl implements VoucherService {
 
         // TODO: Generate random number and based on that number to get voucher template
         Campaign campaign = campaignRepository.findByCampaignId(request.getCampaignId());
-        if(campaign == null || !Objects.equals(campaign.getStatus(), CampaignStatus.NOT_START)){
+        if(campaign == null || Objects.equals(campaign.getStatus(), CampaignStatus.NOT_START)){
             MessageInfo messageInfo = MessageUtil.formatMessage(10004, "campaignId", "campaign not exist or not in status NOT_START");
             throw new BadRequestException(messageInfo);
         }
@@ -110,61 +112,31 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public SearchVoucherResponse searchVoucher(SearchVoucherRequest request) {
-        System.out.println("SimpleEmail Start");
+        Long userId = request.getAuthentication().getUserId();
+        EUser user = eUserRepository.findByUserId(userId);
 
-        String smtpHostServer = "localhost";
-        String emailID = "trantrungnghia5589@gmail.com";
+        if(user.getUserTypeId().equals(UserType.CUSTOMER)){
+            request.setCustomerId(userId);
+        }
 
-        Properties props = System.getProperties();
-
-        props.put("mail.smtp.host", smtpHostServer);
-        props.put("mail.smtp.port", "8025");
-        props.put("mail.smtp.auth", "false");
-
-        Session session = Session.getInstance(props, null);
-
-        sendEmail(session, emailID,"SimpleEmail Testing Subject", "SimpleEmail Testing Body");
-
-//        Long userId = request.getAuthentication().getUserId();
-//        EUser user = eUserRepository.findByUserId(userId);
-//        Long userType = user.getUserTypeId();
-//        if(userType.equals(UserType.CUSTOMER)){
-//            request.setCustomerId(userId);
-//        }
-//        List<Object[]> dbSearchResult = voucherRepository.searchVoucher(userId, userType, request);
-//        List<VoucherDto> dtoList = VoucherDxo.convertFromDbListToDtoList(dbSearchResult);
-//        SearchVoucherResponse response = new SearchVoucherResponse();
-//        response.setVoucherDtoList(dtoList);
-        return null;
+        List<Object[]> dbSearchResult = voucherRepository.searchVoucher(userId,user.getUserTypeId(), request);
+        List<VoucherDto> dtoList = VoucherDxo.convertFromDbListToDtoList(dbSearchResult);
+        SearchVoucherResponse response = new SearchVoucherResponse();
+        response.setVoucherDtoList(dtoList);
+        return response;
     }
 
-    public static void sendEmail(Session session, String toEmail, String subject, String body){
-        try
-        {
-            MimeMessage msg = new MimeMessage(session);
-            //set message headers
-            msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
-            msg.addHeader("format", "flowed");
-            msg.addHeader("Content-Transfer-Encoding", "8bit");
-
-            msg.setFrom(new InternetAddress("no_reply@example.com", "NoReply-JD"));
-
-            msg.setReplyTo(InternetAddress.parse("no_reply@example.com", false));
-
-            msg.setSubject(subject, "UTF-8");
-
-            msg.setText(body, "UTF-8");
-
-            msg.setSentDate(new Date());
-
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail, false));
-            System.out.println("Message is ready");
-            Transport.send(msg);
-
-            System.out.println("EMail Sent Successfully!!");
+    @Override
+    @Transactional
+    public void useVoucher(Long id, UseVoucherRequest request) {
+        Long userId = request.getAuthentication().getUserId();
+        Voucher voucher = voucherRepository.findByVoucherIdAndCustomerId(id, userId);
+        if(voucher == null){
+            MessageInfo messageInfo = MessageUtil.formatMessage(10001, "voucher");
+            throw new BadRequestException(messageInfo);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        voucher.setIsUsed(true);
+        EntityDxo.preUpdate(userId, voucher);
+        voucherRepository.save(voucher);
     }
 }

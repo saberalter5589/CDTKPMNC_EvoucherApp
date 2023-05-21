@@ -51,7 +51,8 @@ public class CampaignController {
             @RequestParam(value="campaignName", required = false) String campaignName,
             @RequestParam(value="dateStart", required = false) String dateStart,
             @RequestParam(value="dateEnd", required = false) String dateEnd,
-            @RequestParam(value="status", required = false) Long status){
+            @RequestParam(value="status", required = false) Long status,
+            @RequestParam(value="partnerId", required = false) Long partnerId){
         SearchCampaignRequest request = new SearchCampaignRequest();
         request.getAuthentication().setUserId(userId);
         request.getAuthentication().setPassword(password);
@@ -61,6 +62,7 @@ public class CampaignController {
         request.setDateStart(dateStart);
         request.setDateEnd(dateEnd);
         request.setStatus(status);
+        request.setPartnerId(partnerId);
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER, UserType.CUSTOMER));
         SearchCampaignResponse response = campaignService.searchCampaign(request);
         return new ResponseEntity<>(response, HttpStatus.OK);

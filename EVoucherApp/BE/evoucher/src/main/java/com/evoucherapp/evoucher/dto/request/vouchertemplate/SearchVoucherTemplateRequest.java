@@ -16,4 +16,5 @@ public class SearchVoucherTemplateRequest extends BaseSearchingRequest {
     String voucherTemplateName;
     String dateStart;
     String dateEnd;
+    Long partnerId;
 }

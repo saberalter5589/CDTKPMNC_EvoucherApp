@@ -2,16 +2,14 @@ package com.evoucherapp.evoucher.service.impl;
 
 import com.evoucherapp.evoucher.common.constant.CampaignStatus;
 import com.evoucherapp.evoucher.common.constant.DateTimeFormat;
+import com.evoucherapp.evoucher.common.constant.UserType;
 import com.evoucherapp.evoucher.dto.MessageInfo;
 import com.evoucherapp.evoucher.dto.obj.VoucherTemplateDto;
 import com.evoucherapp.evoucher.dto.request.vouchertemplate.CreateVoucherTemplateRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertemplate.SearchVoucherTemplateRequest;
 import com.evoucherapp.evoucher.dto.response.vouchertemplate.CreateVoucherTemplateResponse;
 import com.evoucherapp.evoucher.dto.response.vouchertemplate.SearchVoucherTemplateResponse;
-import com.evoucherapp.evoucher.entity.BranchVoucher;
-import com.evoucherapp.evoucher.entity.Campaign;
-import com.evoucherapp.evoucher.entity.VoucherTemplate;
-import com.evoucherapp.evoucher.entity.VoucherType;
+import com.evoucherapp.evoucher.entity.*;
 import com.evoucherapp.evoucher.exception.BadRequestException;
 import com.evoucherapp.evoucher.exception.DataExistException;
 import com.evoucherapp.evoucher.exception.NoDataFoundException;
@@ -45,6 +43,8 @@ public class VoucherTemplateServiceImpl implements VoucherTemplateService {
     BranchRepository branchRepository;
     @Autowired
     BranchVoucherRepository branchVoucherRepository;
+    @Autowired
+    EUserRepository userRepository;
 
     @Override
     @Transactional
@@ -52,8 +52,8 @@ public class VoucherTemplateServiceImpl implements VoucherTemplateService {
         Long partnerId = request.getAuthentication().getUserId();
 
         Campaign campaign = campaignRepository.findByCampaignId(request.getCampaignId());
-        if(campaign == null || !Objects.equals(campaign.getStatus(), CampaignStatus.NOT_START)){
-            MessageInfo messageInfo = MessageUtil.formatMessage(10004, "campaignId", "campaign not exist or not in status NOT_START");
+        if(campaign == null){
+            MessageInfo messageInfo = MessageUtil.formatMessage(10004, "campaignId", "campaign not exist");
             throw new BadRequestException(messageInfo);
         }
 
@@ -100,6 +100,12 @@ public class VoucherTemplateServiceImpl implements VoucherTemplateService {
 
     @Override
     public SearchVoucherTemplateResponse searchVoucherTemplate(SearchVoucherTemplateRequest request) {
+        Long userId = request.getAuthentication().getUserId();
+        EUser user = userRepository.findByUserId(userId);
+        if(user.getUserTypeId().equals(UserType.PARTNER)){
+            request.setPartnerId(userId);
+        }
+
         List<Object[]> dbSearchResult = voucherTemplateRepository.searchVoucherTemplate(request);
         List<VoucherTemplateDto> dtoList = VoucherTemplateDxo.convertFromDbListToDtoList(dbSearchResult);
         SearchVoucherTemplateResponse response = new SearchVoucherTemplateResponse();
@@ -121,11 +127,6 @@ public class VoucherTemplateServiceImpl implements VoucherTemplateService {
             MessageInfo messageInfo = MessageUtil.formatMessage(10003);
             throw new UnAuthorizationException(messageInfo);
         }
-        if(!Objects.equals(campaign.getStatus(), CampaignStatus.NOT_START)){
-            MessageInfo messageInfo = MessageUtil.formatMessage(10003);
-            throw new UnAuthorizationException(messageInfo);
-        }
-
         String reqCode = request.getVoucherTemplateCode();
         VoucherTemplate dupVTemplate = voucherTemplateRepository.findByCode(reqCode);
         if(dupVTemplate != null && dupVTemplate != voucherTemplate){
@@ -137,7 +138,7 @@ public class VoucherTemplateServiceImpl implements VoucherTemplateService {
         LocalDate dateEnd = DateTimeUtil.parseStringToDate(request.getDateEnd(), DateTimeFormat.DATE);
 
         voucherTemplate.setVoucherTypeId(request.getVoucherTypeId());
-        voucherTemplate.setCampainId(request.getCampaignId());
+        //voucherTemplate.setCampainId(request.getCampaignId());
         voucherTemplate.setVoucherTemplateCode(request.getVoucherTemplateCode());
         voucherTemplate.setVoucherTemplateName(request.getVoucherTemplateName());
         voucherTemplate.setAmount(request.getAmount());

@@ -28,6 +28,7 @@ const CampaignDetail = () => {
   const [note, setNote] = useState("");
   const [gameOptionList, setGameOptionList] = useState([]);
   const [selectedGameOptions, setSelectedGameOptions] = useState();
+  const [vTemplateList, setVTemplateList] = useState([]);
 
   useEffect(() => {
     if (userInfo == null || userInfo?.userTypeId != PARTNER) {
@@ -77,7 +78,7 @@ const CampaignDetail = () => {
     setCampaignId(campaign?.campainId);
     setCampaignCode(campaign?.campainCode);
     setCampaignName(campaign?.campainName);
-    setCampaignStatus(campaign?.campaignStatus);
+    setCampaignStatus(campaign?.status);
     setDateStart(
       campaign?.dateStart ? convertFromStringToDate(campaign?.dateStart) : null
     );
@@ -92,6 +93,7 @@ const CampaignDetail = () => {
     setSelectedGameOptions(selectedGameOptions);
     setDescription(campaign?.description);
     setNote(campaign?.note);
+    setVTemplateList(campaign?.voucherTemplateDtoList);
   };
 
   const handleSelectGame = (data) => {
@@ -263,11 +265,39 @@ const CampaignDetail = () => {
                 </div>
               </div>
             </div>
+            <h4>Voucher Template List</h4>
+            <div
+              className="py-4 table-responsive"
+              style={{ "max-height": "200px" }}
+            >
+              <table className="table border shadow">
+                <thead>
+                  <tr>
+                    <th scope="col">Voucher Template Id</th>
+                    <th scope="col">Voucher Template Code</th>
+                    <th scope="col">Voucher Template name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vTemplateList?.map((vTemplate, index) => (
+                    <>
+                      <tr>
+                        <th scope="row" key={vTemplate?.voucherTemplateId}>
+                          {vTemplate?.voucherTemplateId}
+                        </th>
+                        <td>{vTemplate?.voucherTemplateCode}</td>
+                        <td>{vTemplate?.voucherTemplateName}</td>
+                      </tr>
+                    </>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             <div className="card-footer text-center">
               <button type="submit" className="btn btn-primary">
                 {id == -1 ? "Create" : "Edit"}
               </button>
-              <Link className="btn btn-danger" to={"/campaign"}>
+              <Link className="btn btn-danger " to={"/campaign"}>
                 Back
               </Link>
             </div>

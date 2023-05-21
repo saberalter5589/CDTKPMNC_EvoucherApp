@@ -6,7 +6,7 @@ const Home = () => {
   const [userInfo, setUserInfo] = useState(getUserInfoFromLocalStorage());
   const navigate = useNavigate();
   useEffect(() => {
-    if (userInfo == null || userInfo?.userTypeId != PARTNER) {
+    if (userInfo == null) {
       navigate("/login");
     }
   }, []);

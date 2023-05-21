@@ -50,20 +50,22 @@ public class CampaignDxo {
                 String gameId = infos[0];
                 String gameCode = infos[1];
                 String gameName = infos[2];
+                String gameDescription = infos[3];
 
                 GameDto gameDto = new GameDto();
                 gameDto.setId(Long.valueOf(gameId));
                 gameDto.setCode(gameCode);
                 gameDto.setName(gameName);
+                gameDto.setDescription(gameDescription);
                 dto.getGameList().add(gameDto);
             }
         }
 
         String voucherTemplateInfoStr = obj[11] != null ? ObjectUtil.getValueOfString(obj[11]) : null;
         if(!CommonUtil.isNullOrWhitespace(voucherTemplateInfoStr)){
-            String[] voucherTemplateInfos = gameInfoStr.split(" , ");
-            for(String gameInfo : voucherTemplateInfos){
-                String[] infos = gameInfo.split("#");
+            String[] voucherTemplateInfos = voucherTemplateInfoStr.split(" , ");
+            for(String voucher : voucherTemplateInfos){
+                String[] infos = voucher.split("#");
                 String vtId = infos[0];
                 String vtCode = infos[1];
                 String vtName = infos[2];

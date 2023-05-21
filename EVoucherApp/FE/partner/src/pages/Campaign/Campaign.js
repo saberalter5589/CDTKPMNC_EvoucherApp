@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { PARTNER } from "../../commons/constant";
+import { CUSTOMER, PARTNER } from "../../commons/constant";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,16 +17,20 @@ const Campaign = () => {
   const [campaignId, setCampaignId] = useState(null);
   const [campaignCode, setCampaignCode] = useState("");
   const [campaignName, setCampaignName] = useState("");
-  const [campaignStatus, setCampaignStatus] = useState(
-    CAMPAIGN_STATUS.NOT_START
-  );
+  const [campaignStatus, setCampaignStatus] = useState(-1);
   const [dateStart, setDateStart] = useState();
   const [dateEnd, setDateEnd] = useState();
+  const [partnerList, setPartnerList] = useState();
+  const [partnerId, setPartnerId] = useState(-1);
 
   useEffect(() => {
-    if (userInfo == null || userInfo?.userTypeId != PARTNER) {
+    if (userInfo == null) {
       navigate("/login");
     }
+    if (userInfo?.userTypeId == CUSTOMER) {
+      loadPartner();
+    }
+
     loadCampaign(null);
   }, []);
 
@@ -45,8 +49,28 @@ const Campaign = () => {
     setCampaigns(response?.data?.campaignDtoList);
   };
 
+  const loadPartner = async () => {
+    let config = {
+      headers: {
+        userId: userInfo?.userId,
+        password: userInfo?.password,
+      },
+    };
+    const response = await axios.get(
+      "http://localhost:8080/api/partner/search",
+      config
+    );
+    const partnerList = [
+      {
+        userId: -1,
+        partnerName: "All",
+      },
+      ...response?.data?.partnerList,
+    ];
+    setPartnerList(partnerList);
+  };
+
   const renderStatus = (status) => {
-    console.log(status);
     switch (status) {
       case CAMPAIGN_STATUS.NOT_START:
         return "Not started";
@@ -54,6 +78,8 @@ const Campaign = () => {
         return "In progress";
       case CAMPAIGN_STATUS.END:
         return "End";
+      default:
+        return "All";
     }
   };
 
@@ -63,9 +89,11 @@ const Campaign = () => {
       campaignId: campaignId ? campaignId : null,
       campaignCode: campaignCode ? campaignCode : "",
       campaignName: campaignName ? campaignName : "",
-      status: campaignStatus ? campaignStatus : null,
+      status: campaignStatus && campaignStatus != -1 ? campaignStatus : null,
       dateStart: dateStart ? convertFromDateToString(dateStart) : "",
       dateEnd: dateEnd ? convertFromDateToString(dateEnd) : "",
+      partnerId:
+        userInfo?.userTypeId == CUSTOMER && partnerId != -1 ? partnerId : "",
     };
     loadCampaign(params);
   };
@@ -120,6 +148,7 @@ const Campaign = () => {
                       onChange={(e) => setCampaignStatus(e.target.value)}
                       className="form-control"
                     >
+                      <option value={-1}>All</option>
                       <option value={CAMPAIGN_STATUS.NOT_START}>
                         Not Started
                       </option>
@@ -130,6 +159,28 @@ const Campaign = () => {
                     </select>
                   </div>
                 </div>
+                {userInfo?.userTypeId == CUSTOMER && (
+                  <>
+                    <div className="row">
+                      <div className="col-lg-12">
+                        <div className="form-group">
+                          <label>Partner</label>
+                          <select
+                            value={partnerId}
+                            onChange={(e) => setPartnerId(e.target.value)}
+                            className="form-control"
+                          >
+                            {partnerList?.map((partner) => (
+                              <option value={partner?.userId}>
+                                {`${partner?.partnerName}`}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
                 <div className="row">
                   <div className="col-lg-6">
                     <div className="form-group">
@@ -160,21 +211,24 @@ const Campaign = () => {
               <button type="submit" className="btn btn-primary">
                 Search
               </button>
-              <Link className="btn btn-success" to={`/campaign-detail/${-1}`}>
-                Create new
-              </Link>
+              {userInfo?.userTypeId == PARTNER && (
+                <Link className="btn btn-success" to={`/campaign-detail/${-1}`}>
+                  Create new
+                </Link>
+              )}
             </div>
           </div>
         </form>
       </div>
       <h2>Campaign List</h2>
-      <div className="py-4">
+      <div className="py-4 table-responsive" style={{ "max-height": "500px" }}>
         <table className="table border shadow">
           <thead>
             <tr>
               <th scope="col">Campaign Id</th>
               <th scope="col">Campaign Code</th>
               <th scope="col">Campaign name</th>
+              {userInfo?.userTypeId == CUSTOMER && <th scope="col">Partner</th>}
               <th scope="col">Status</th>
               <th scope="col">Date start</th>
               <th scope="col">Date end</th>
@@ -190,16 +244,30 @@ const Campaign = () => {
                   </th>
                   <td>{campaign?.campainCode}</td>
                   <td>{campaign?.campainName}</td>
+                  {userInfo?.userTypeId == CUSTOMER && (
+                    <td>{campaign?.partner?.partnerName}</td>
+                  )}
                   <td>{renderStatus(campaign?.status)}</td>
                   <td>{campaign?.dateStart}</td>
                   <td>{campaign?.dateEnd}</td>
                   <td>
-                    <Link
-                      className="btn btn-success"
-                      to={`/campaign-detail/${campaign?.campainId}`}
-                    >
-                      Edit
-                    </Link>
+                    {userInfo?.userTypeId == PARTNER && (
+                      <Link
+                        className="btn btn-success"
+                        to={`/campaign-detail/${campaign?.campainId}`}
+                      >
+                        Edit
+                      </Link>
+                    )}
+                    {userInfo?.userTypeId == CUSTOMER &&
+                      campaign?.status == CAMPAIGN_STATUS.IN_PROGRESS && (
+                        <Link
+                          className="btn btn-success"
+                          to={`/campaign-view/${campaign?.campainId}`}
+                        >
+                          View detail
+                        </Link>
+                      )}
                   </td>
                 </tr>
               </>

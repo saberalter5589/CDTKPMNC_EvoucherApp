@@ -8,6 +8,7 @@ public class SearchVoucherRequest extends BaseSearchingRequest {
     Long voucherId;
     String voucherCode;
     String voucherName;
+    Long partnerId;
     Long customerId;
     String customerName;
     Long vTemplateId;

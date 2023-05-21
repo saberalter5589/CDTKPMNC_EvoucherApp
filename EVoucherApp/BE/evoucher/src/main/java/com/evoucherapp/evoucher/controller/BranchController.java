@@ -34,7 +34,7 @@ public class BranchController {
     }
 
     @GetMapping("/branch/search")
-    public ResponseEntity<GetBranchListResponse> searchCustomer(@RequestHeader("userId") Long userId,
+    public ResponseEntity<GetBranchListResponse> searchBranch(@RequestHeader("userId") Long userId,
                                                                 @RequestHeader("password") String password,
                                                                 @RequestParam(value = "branchId", required = false) Long branchId,
                                                                 @RequestParam(value="branchName", required = false) String branchName,

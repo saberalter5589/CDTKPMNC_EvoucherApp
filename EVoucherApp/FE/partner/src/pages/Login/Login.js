@@ -6,14 +6,13 @@ import axios from "axios";
 import { PARTNER } from "../../commons/constant";
 
 const Login = (props) => {
-  const { setIsLogin } = props;
+  const { setIsLogin, setUserInfo } = props;
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     localStorage.clear();
-    //setUserInfo(null);
     setIsLogin(false);
   }, []);
 
@@ -35,13 +34,15 @@ const Login = (props) => {
             userTypeId: user.userTypeId,
           })
         );
-        if (user.userTypeId != PARTNER) {
-          toast.error("You are not partner");
-          return;
-        }
         setIsLogin(true);
         toast.success("Success");
         navigate("/");
+        setUserInfo({
+          userId: user.userId,
+          userName: username,
+          password: password,
+          userTypeId: user.userTypeId,
+        });
       }
     } catch (error) {
       if (error?.response?.status == 401) {
@@ -50,26 +51,13 @@ const Login = (props) => {
     }
   };
 
-  const validate = () => {
-    let result = true;
-    if (username === "" || username === null) {
-      result = false;
-      toast.warning("Please enter username");
-    }
-    if (password === "" || password === null) {
-      result = true;
-      toast.warning("Please enter password");
-    }
-    return result;
-  };
-
   return (
     <div className="row">
       <div className="offset-lg-3 col-lg-6">
         <form onSubmit={ProceedLogin} className="container">
           <div className="card">
             <div className="card-header">
-              <h2>Partner Login</h2>
+              <h2>Login</h2>
             </div>
             <div className="card-body">
               <div className="form-group">
@@ -97,8 +85,11 @@ const Login = (props) => {
               <button type="submit" className="btn btn-primary">
                 Login
               </button>
-              <Link className="btn btn-success" to={"/register"}>
+              <Link className="btn btn-success" to={"/register-partner"}>
                 Create new partner
+              </Link>
+              <Link className="btn btn-success" to={"/register-customer"}>
+                Create new customer
               </Link>
             </div>
           </div>

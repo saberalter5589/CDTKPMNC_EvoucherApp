@@ -58,9 +58,9 @@ public class VoucherRepositoryCustomImpl implements VoucherRepositoryCustom {
                 ") AS branch_info ON branch_info.voucher_id = vc.voucher_id ");
         sql.append("WHERE vc.is_deleted = false ");
 
-        if (Objects.equals(userType, UserType.PARTNER)) {
+        if (request.getPartnerId() != null) {
             sql.append("AND pn.partner_id =:partnerId ");
-            params.put("partnerId", userId);
+            params.put("partnerId", request.getPartnerId());
         }
 
         if(request.getVoucherId() != null){
@@ -101,6 +101,11 @@ public class VoucherRepositoryCustomImpl implements VoucherRepositoryCustom {
         if(!CommonUtil.isNullOrWhitespace(request.getVTemplateName())){
             sql.append("AND vt.voucher_template_name LIKE :vTemplateName ");
             params.put("vTemplateName", "%" + request.getVTemplateName() + "%");
+        }
+
+        if(request.getIsUsed() != null){
+            sql.append("AND vc.is_used =:isUsed ");
+            params.put("isUsed", request.getIsUsed());
         }
 
         sql.append("ORDER BY vc.updated_at DESC ");

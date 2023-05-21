@@ -15,13 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 
 @Controller
+@CrossOrigin(origins = "*")
 public class VoucherTypeController {
     @Autowired
     AuthenticationService authenticationService;
@@ -36,7 +35,15 @@ public class VoucherTypeController {
     }
 
     @GetMapping("/voucher-type/search")
-    public ResponseEntity<GetVoucherTypeListResponse> searchVoucherType(@RequestBody GetVoucherTypeListRequest request){
+    public ResponseEntity<GetVoucherTypeListResponse> searchVoucherType( @RequestHeader("userId") Long userId,
+                                                                         @RequestHeader("password") String password,
+                                                                         @RequestParam(value = "voucherTemplateCode", required = false) String code,
+                                                                         @RequestParam(value = "voucherTemplateName", required = false) String name){
+        GetVoucherTypeListRequest request = new GetVoucherTypeListRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        request.setCode(code);
+        request.setName(name);
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER));
         GetVoucherTypeListResponse response = voucherTypeService.searchVoucherTypeList(request);
         return new ResponseEntity<>(response, HttpStatus.OK);

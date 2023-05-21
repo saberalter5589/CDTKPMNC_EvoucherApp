@@ -1,14 +1,103 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PARTNER } from "../../commons/constant";
-import { getUserInfoFromLocalStorage } from "../../commons/utils";
+import { CUSTOMER } from "../../commons/constant";
+import { ADMIN } from "../../commons/constant";
+
 const Header = (props) => {
+  const { userInfo } = props;
+  const [menuList, setMenuList] = useState([]);
+  const [title, setTitle] = useState("");
+  const renderMenu = () => {
+    switch (userInfo?.userTypeId) {
+      case PARTNER:
+        setMenuList([
+          {
+            to: "/",
+            name: "Home",
+            class: "nav-link active",
+          },
+          {
+            to: "/branch",
+            name: "Branch",
+            class: "nav-link",
+          },
+          {
+            to: "/campaign",
+            name: "Campaign",
+            class: "nav-link",
+          },
+          {
+            to: "/voucher-template",
+            name: "Voucher Template",
+            class: "nav-link",
+          },
+          {
+            to: "/login",
+            name: "Logout",
+            class: "nav-link",
+          },
+        ]);
+        break;
+      case CUSTOMER:
+        setMenuList([
+          {
+            to: "/",
+            name: "Home",
+            class: "nav-link active",
+          },
+          {
+            to: "/campaign",
+            name: "Campaign",
+            class: "nav-link",
+          },
+          {
+            to: "/voucher",
+            name: "Voucher",
+            class: "nav-link",
+          },
+          {
+            to: "/login",
+            name: "Logout",
+            class: "nav-link",
+          },
+        ]);
+    }
+  };
+
+  const renderTitle = () => {
+    switch (userInfo?.userTypeId) {
+      case ADMIN:
+        setTitle("Administrator Page");
+        break;
+      case PARTNER:
+        setTitle("Partner Page");
+        break;
+      case CUSTOMER:
+        setTitle("Customer Page");
+        break;
+    }
+  };
+
+  useEffect(() => {
+    renderMenu();
+    renderTitle();
+  }, [userInfo]);
+
+  const onChangeActiveTab = (to) => {
+    const newMenu = menuList?.map((m) => ({
+      ...m,
+      class: m?.to == to ? "nav-link active" : "nav-link",
+    }));
+    setMenuList(newMenu);
+  };
+
   return (
     <div>
       {props?.isLogin && (
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
           <a class="navbar-brand" href="#">
-            Partner navigation
+            {title}
           </a>
           <button
             class="navbar-toggler"
@@ -22,27 +111,17 @@ const Header = (props) => {
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-              <li class="nav-item active">
-                <Link class="nav-link" to={"/"}>
-                  Home
-                </Link>
-              </li>
-              <li class="nav-item">
-                <Link class="nav-link" to={"/branch"}>
-                  Branch
-                </Link>
-              </li>
-              <li class="nav-item">
-                <Link class="nav-link" to={"/campaign"}>
-                  Campaign
-                </Link>
-              </li>
-              <li class="nav-item">
-                <Link class="nav-link" to={"/login"}>
-                  Logout
-                </Link>
-              </li>
+            <ul class="nav nav-pills">
+              {menuList?.map((menu) => (
+                <li
+                  class="nav-item"
+                  onClick={() => onChangeActiveTab(menu?.to)}
+                >
+                  <Link class={menu?.class} to={menu?.to}>
+                    {menu?.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </nav>

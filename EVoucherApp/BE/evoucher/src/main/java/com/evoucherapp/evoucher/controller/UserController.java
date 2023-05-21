@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 
 @Controller
+@CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
     EUserService eUserService;
@@ -31,8 +32,17 @@ public class UserController {
     }
 
     @GetMapping("/partner/search")
-    public ResponseEntity<GetPartnerListResponse> searchPartner(@RequestBody GetPartnerListRequest request){
-        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER));
+    public ResponseEntity<GetPartnerListResponse> searchPartner(
+            @RequestHeader("userId") Long userId,
+            @RequestHeader("password") String password,
+            @RequestParam(value = "partnerId", required = false) String partnerId,
+            @RequestParam(value="partnerName", required = false) String partnerName){
+        GetPartnerListRequest request = new GetPartnerListRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        request.setId(partnerId);
+        request.setPartnerName(partnerName);
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.CUSTOMER));
         GetPartnerListResponse response = eUserService.searchPartner(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

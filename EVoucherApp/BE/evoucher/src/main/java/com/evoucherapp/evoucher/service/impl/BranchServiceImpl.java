@@ -35,6 +35,8 @@ public class BranchServiceImpl implements BranchService {
     EUserRepository eUserRepository;
     @Autowired
     BranchRepository branchRepository;
+    @Autowired
+    EUserRepository userRepository;
 
     @Override
     @Transactional
@@ -65,6 +67,12 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public GetBranchListResponse searchBranch(GetBranchListRequest request) {
+        Long userId = request.getAuthentication().getUserId();
+        EUser user = userRepository.findByUserId(userId);
+        if(user.getUserTypeId().equals(UserType.PARTNER)){
+            request.setPartnerId(userId);
+        }
+
         List<Object[]> dbBranchList = branchRepository.searchBranch(request);
         List<BranchDto> branchDtoList = BranchDxo.mapFromDbObjListToBranchDtoList(dbBranchList);
         GetBranchListResponse response = new GetBranchListResponse();
