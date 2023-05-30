@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface PartnerTypeRepository extends JpaRepository<PartnerType, Long> {
     @Query("SELECT pt FROM PartnerType pt WHERE pt.partnerTypeId =:id AND pt.isDeleted = false")
-    PartnerType findByPartnerId(@Param("id") Long id);
+    PartnerType findByPartnerTypeId(@Param("id") Long id);
+
 }

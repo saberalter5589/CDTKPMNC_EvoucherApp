@@ -20,6 +20,13 @@ import Voucher from "./pages/Voucher/Voucher";
 import VoucherDetail from "./pages/Voucher/VoucherDetail";
 import RegisterCustomer from "./pages/Register/RegisterCustomer";
 import RegisterPartner from "./pages/Register/RegisterPartner";
+import CustomerDetail from "./pages/Customer/CustomerDetail";
+import PartnerDetail from "./pages/Partner/PartnerDetail";
+import PartnerType from "./pages/PartnerType/PartnerType";
+import VoucherType from "./pages/VoucherType/VoucherType";
+import VoucherTypeDetail from "./pages/VoucherType/VoucherTypeDetail";
+import PartnerTypeDetail from "./pages/PartnerType/PartnerTypeDetail";
+
 function App() {
   const [isLogin, setIsLogin] = useState(true);
   const [userInfo, setUserInfo] = useState(getUserInfoFromLocalStorage());
@@ -52,6 +59,18 @@ function App() {
           <Route path="/game" element={<Game />} />
           <Route path="/voucher" element={<Voucher />} />
           <Route path="/voucher-detail/:id" element={<VoucherDetail />} />
+          <Route path="/customer-detail/:id" element={<CustomerDetail />} />
+          <Route path="/partner-detail/:id" element={<PartnerDetail />} />
+          <Route path="/partner-type" element={<PartnerType />} />
+          <Route
+            path="/partner-type-detail/:id"
+            element={<PartnerTypeDetail />}
+          />
+          <Route path="/voucher-type" element={<VoucherType />} />
+          <Route
+            path="/voucher-type-detail/:id"
+            element={<VoucherTypeDetail />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

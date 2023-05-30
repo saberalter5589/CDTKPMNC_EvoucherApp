@@ -82,15 +82,23 @@ const Login = (props) => {
               </div>
             </div>
             <div className="card-footer">
-              <button type="submit" className="btn btn-primary">
-                Login
-              </button>
-              <Link className="btn btn-success" to={"/register-partner"}>
-                Create new partner
-              </Link>
-              <Link className="btn btn-success" to={"/register-customer"}>
-                Create new customer
-              </Link>
+              <div className="row">
+                <div className="offset-lg-12 col-lg-12">
+                  <button type="submit" className="btn btn-primary">
+                    Login
+                  </button>
+                  <Link
+                    className="btn btn-success"
+                    to={"/register-partner"}
+                    style={{ margin: 20 }}
+                  >
+                    Create new partner
+                  </Link>
+                  <Link className="btn btn-success" to={"/register-customer"}>
+                    Create new customer
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </form>

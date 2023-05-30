@@ -3,8 +3,10 @@ package com.evoucherapp.evoucher.controller;
 import com.evoucherapp.evoucher.common.constant.UserType;
 import com.evoucherapp.evoucher.dto.request.branch.CreateBranchRequest;
 import com.evoucherapp.evoucher.dto.request.branch.GetBranchListRequest;
+import com.evoucherapp.evoucher.dto.request.partnertype.CreatePartnerTypeRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertype.CreateVoucherTypeRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertype.GetVoucherTypeListRequest;
+import com.evoucherapp.evoucher.dto.response.SuccessResponse;
 import com.evoucherapp.evoucher.dto.response.branch.CreateBranchResponse;
 import com.evoucherapp.evoucher.dto.response.branch.GetBranchListResponse;
 import com.evoucherapp.evoucher.dto.response.vouchertype.CreateVoucherTypeResponse;
@@ -47,5 +49,12 @@ public class VoucherTypeController {
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER));
         GetVoucherTypeListResponse response = voucherTypeService.searchVoucherTypeList(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/voucher-type/{id}")
+    public ResponseEntity<SuccessResponse> updatePartnerType(@PathVariable("id") Long id, @RequestBody CreateVoucherTypeRequest request){
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN));
+        voucherTypeService.updateVoucherType(id, request);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 }

@@ -43,11 +43,11 @@ const Branch = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     let params = {
-      branchId: branchId,
-      branchName: branchName,
-      address: address,
-      phone: phone,
-      partnerId: userInfo?.userId,
+      branchId: branchId ? branchId : null,
+      branchName: branchName ? branchName : null,
+      address: address ? address : null,
+      phone: phone ? phone : null,
+      partnerId: userInfo?.userId ? userInfo?.userId : null,
     };
     loadBranch(params);
   };

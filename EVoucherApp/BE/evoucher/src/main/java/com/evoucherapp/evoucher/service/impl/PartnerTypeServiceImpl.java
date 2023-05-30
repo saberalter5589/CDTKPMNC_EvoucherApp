@@ -64,4 +64,19 @@ public class PartnerTypeServiceImpl implements PartnerTypeService {
         response.setPartnerTypeDtoList(dtos);
         return response;
     }
+
+    @Override
+    @Transactional
+    public void updatePartnerType(Long id, CreatePartnerTypeRequest request) {
+        Long userId = request.getAuthentication().getUserId();
+
+        PartnerType partnerType = partnerTypeRepository.findByPartnerTypeId(id);
+        if(partnerType == null){
+            return;
+        }
+        partnerType.setPartnerTypeCode(request.getPartnerTypeCode());
+        partnerType.setPartnerTypeName(request.getPartnerTypeName());
+        EntityDxo.preCreate(userId, partnerType);
+        partnerTypeRepository.save(partnerType);
+    }
 }

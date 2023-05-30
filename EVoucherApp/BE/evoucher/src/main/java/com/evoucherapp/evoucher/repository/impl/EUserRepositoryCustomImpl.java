@@ -33,7 +33,7 @@ public class EUserRepositoryCustomImpl implements EUserRepositoryCustom {
 
         if(request.getId() != null){
             sql.append("AND eu.user_id =:id ");
-            params.put("id", request.getId());
+            params.put("id", Long.valueOf(request.getId()));
         }
 
         if(!CommonUtil.isNullOrWhitespace(request.getUsername())){
@@ -80,8 +80,8 @@ public class EUserRepositoryCustomImpl implements EUserRepositoryCustom {
         sql.append("WHERE eu.is_deleted = false AND pn.is_deleted = false AND eu.user_type_id =:userTypeId ");
         params.put("userTypeId", UserType.PARTNER);
         if(request.getId() != null){
-            sql.append("AND eu.user_id =:id");
-            params.put("id", request.getId());
+            sql.append("AND eu.user_id =:id ");
+            params.put("id", Long.valueOf(request.getId()));
         }
 
         if(!CommonUtil.isNullOrWhitespace(request.getUsername())){

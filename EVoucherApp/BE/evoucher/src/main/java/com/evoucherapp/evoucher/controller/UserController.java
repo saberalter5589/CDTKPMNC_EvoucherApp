@@ -25,8 +25,15 @@ public class UserController {
     AuthenticationService authenticationService;
 
     @GetMapping("/customer/search")
-    public ResponseEntity<GetCustomerListResponse> searchCustomer(@RequestBody GetCustomerListRequest request){
-        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER));
+    public ResponseEntity<GetCustomerListResponse> searchCustomer(
+            @RequestHeader("userId") Long userId,
+            @RequestHeader("password") String password,
+            @RequestParam(value = "customerId", required = false) String customerId){
+        GetCustomerListRequest request = new GetCustomerListRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        request.setId(customerId);
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.CUSTOMER));
         GetCustomerListResponse response = eUserService.searchCustomer(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -42,7 +49,7 @@ public class UserController {
         request.getAuthentication().setPassword(password);
         request.setId(partnerId);
         request.setPartnerName(partnerName);
-        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.CUSTOMER));
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN,UserType.PARTNER, UserType.CUSTOMER));
         GetPartnerListResponse response = eUserService.searchPartner(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

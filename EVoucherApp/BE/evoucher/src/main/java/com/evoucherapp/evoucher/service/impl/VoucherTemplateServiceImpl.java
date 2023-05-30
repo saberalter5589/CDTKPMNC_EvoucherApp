@@ -62,7 +62,7 @@ public class VoucherTemplateServiceImpl implements VoucherTemplateService {
             throw new UnAuthorizationException(messageInfo);
         }
 
-        VoucherType voucherType = voucherTypeRepository.findByVoucherId(request.getVoucherTypeId());
+        VoucherType voucherType = voucherTypeRepository.findByVoucherTypeId(request.getVoucherTypeId());
         if(voucherType == null){
             MessageInfo messageInfo = MessageUtil.formatMessage(10001, "voucherTypeId");
             throw new NoDataFoundException(messageInfo);

@@ -205,7 +205,7 @@ public class EUserServiceImpl implements EUserService {
             partner.setPartnerTypeId(0L);
         }
         else {
-            PartnerType partnerType = partnerTypeRepository.findByPartnerId(partnerTypeId);
+            PartnerType partnerType = partnerTypeRepository.findByPartnerTypeId(partnerTypeId);
             if(partnerType == null){
                 MessageInfo messageInfo = MessageUtil.formatMessage(10001, "partnerTypeId");
                 throw new NoDataFoundException(messageInfo);

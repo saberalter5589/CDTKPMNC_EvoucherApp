@@ -122,7 +122,7 @@ const RegisterCustomer = (props) => {
               <div className="row">
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Birthdat</label>
+                    <label>Birthday</label>
                     <DatePicker
                       selected={birthday}
                       onChange={(date) => setBirthDay(date)}
@@ -137,7 +137,7 @@ const RegisterCustomer = (props) => {
               <button type="submit" className="btn btn-primary">
                 Create
               </button>
-              <Link className="btn btn-danger " to={"/campaign"}>
+              <Link className="btn btn-danger " to={"/login"}>
                 Back
               </Link>
             </div>

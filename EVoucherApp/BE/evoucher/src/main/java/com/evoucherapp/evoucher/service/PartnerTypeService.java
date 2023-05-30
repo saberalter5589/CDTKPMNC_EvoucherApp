@@ -8,4 +8,5 @@ import com.evoucherapp.evoucher.dto.response.partnertype.SearchPartnerTypeRespon
 public interface PartnerTypeService {
     CreatePartnerTypeResponse createPartnerType(CreatePartnerTypeRequest request);
     SearchPartnerTypeResponse searchPartnerType(SearchPartnerTypeRequest request);
+    void updatePartnerType(Long id, CreatePartnerTypeRequest request);
 }

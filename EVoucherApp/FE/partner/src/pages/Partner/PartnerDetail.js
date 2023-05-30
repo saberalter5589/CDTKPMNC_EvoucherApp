@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { CUSTOMER, PARTNER } from "../../commons/constant";
+import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import { getUserInfoFromLocalStorage } from "../../commons/utils";
+import { CAMPAIGN_STATUS } from "../../commons/constant";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { CUSTOMER, PARTNER } from "../../commons/constant";
-import { convertFromDateToString } from "../../commons/utils";
+import {
+  convertFromDateToString,
+  convertFromStringToDate,
+} from "../../commons/utils";
 
-const RegisterPartner = (props) => {
+const PartnerDetail = () => {
+  const [userInfo, setUserInfo] = useState(getUserInfoFromLocalStorage());
+  const { id } = useParams();
   const navigate = useNavigate();
   const [username, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -21,7 +28,11 @@ const RegisterPartner = (props) => {
   const [partnerTypeList, setPartnerTypeList] = useState([]);
 
   useEffect(() => {
+    if (userInfo == null) {
+      navigate("/login");
+    }
     getPartnerTypeList();
+    loadPartner();
   }, []);
 
   const getPartnerTypeList = async () => {
@@ -32,54 +43,74 @@ const RegisterPartner = (props) => {
     setPartnerTypeId(response?.data?.partnerTypeDtoList[0]?.partnerTypeId);
   };
 
+  const loadPartner = async () => {
+    let config = {
+      headers: {
+        userId: userInfo?.userId,
+        password: userInfo?.password,
+      },
+      params: {
+        partnerId: id,
+      },
+    };
+    const response = await axios.get(
+      "http://localhost:8080/api/partner/search",
+      config
+    );
+    const info = response?.data?.partnerList[0];
+    setUserName(info?.userName);
+    setEmail(info?.email);
+    setPhone(info?.phone);
+    setAddress(info?.address);
+    setPartnerName(info?.partnerName);
+    setPartnerTypeId(info?.partnerTypeId);
+    setNote(info?.partnerNote);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = {
-      userTypeId: PARTNER,
-      userName: username,
-      password: password,
-      email: email,
-      phone: phone,
-      address: address,
-      partnerName: partnerName,
-      partnerTypeId: partnerTypeId,
-      note: note,
-    };
-    const res = await axios.post(
-      `http://localhost:8080/api/partner/create`,
-      payload
-    );
-    if (res.status == 200) {
-      toast.success("Success");
-      navigate("/login");
+    try {
+      const payload = {
+        authentication: {
+          userId: userInfo?.userId,
+          password: userInfo?.password,
+        },
+        userName: username,
+        email: email,
+        phone: phone,
+        address: address,
+        partnerName: partnerName,
+        partnerTypeId: partnerTypeId,
+        note: note,
+      };
+      const res = await axios.put(
+        `http://localhost:8080/api/partner/${id}`,
+        payload
+      );
+      if (res.status == 200) {
+        toast.success("Success");
+      }
+    } catch (error) {
+      toast.error("Error");
     }
   };
+
   return (
     <>
       <div className="col-lg-12">
         <form onSubmit={handleSubmit}>
           <div className="card">
             <div className="card-header">
-              <h1>Register for new Partner</h1>
+              <h1>Edit Partner info</h1>
             </div>
             <div className="card-body">
               <div className="row">
-                <div className="col-lg-6">
+                <div className="col-lg-12">
                   <div className="form-group">
                     <label>Username</label>
                     <input
                       value={username}
                       onChange={(e) => setUserName(e.target.value)}
-                      className="form-control"
-                    ></input>
-                  </div>
-                </div>
-                <div className="col-lg-6">
-                  <div className="form-group">
-                    <label>Password</label>
-                    <input
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                       className="form-control"
                     ></input>
                   </div>
@@ -160,9 +191,9 @@ const RegisterPartner = (props) => {
             </div>
             <div className="card-footer text-center">
               <button type="submit" className="btn btn-primary">
-                Create
+                Update
               </button>
-              <Link className="btn btn-danger " to={"/login"}>
+              <Link className="btn btn-danger " to={"/campaign"}>
                 Back
               </Link>
             </div>
@@ -173,4 +204,4 @@ const RegisterPartner = (props) => {
   );
 };
 
-export default RegisterPartner;
+export default PartnerDetail;

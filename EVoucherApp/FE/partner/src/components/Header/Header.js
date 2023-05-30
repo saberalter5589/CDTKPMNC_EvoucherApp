@@ -10,12 +10,41 @@ const Header = (props) => {
   const [title, setTitle] = useState("");
   const renderMenu = () => {
     switch (userInfo?.userTypeId) {
+      case ADMIN:
+        setMenuList([
+          {
+            to: "/",
+            name: "Home",
+            class: "nav-link active",
+          },
+          {
+            to: "/partner-type",
+            name: "Partner Type",
+            class: "nav-link",
+          },
+          {
+            to: "/voucher-type",
+            name: "Voucher Type",
+            class: "nav-link",
+          },
+          {
+            to: "/login",
+            name: "Logout",
+            class: "nav-link",
+          },
+        ]);
+        break;
       case PARTNER:
         setMenuList([
           {
             to: "/",
             name: "Home",
             class: "nav-link active",
+          },
+          {
+            to: `/partner-detail/${userInfo?.userId}`,
+            name: "My Info",
+            class: "nav-link",
           },
           {
             to: "/branch",
@@ -45,6 +74,11 @@ const Header = (props) => {
             to: "/",
             name: "Home",
             class: "nav-link active",
+          },
+          {
+            to: `/customer-detail/${userInfo?.userId}`,
+            name: "My Info",
+            class: "nav-link",
           },
           {
             to: "/campaign",

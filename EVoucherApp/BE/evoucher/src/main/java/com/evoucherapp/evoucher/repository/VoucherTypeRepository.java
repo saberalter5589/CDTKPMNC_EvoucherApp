@@ -11,7 +11,7 @@ public interface VoucherTypeRepository extends JpaRepository<VoucherType, Long> 
     @Query("SELECT vct FROM VoucherType vct WHERE vct.voucherTypeCode =:voucherTypeCode AND vct.isDeleted = false ")
     VoucherType findByCode(String voucherTypeCode);
     @Query("SELECT vct FROM VoucherType vct WHERE vct.voucherTypeId =:id AND vct.isDeleted = false ")
-    VoucherType findByVoucherId(Long id);
+    VoucherType findByVoucherTypeId(Long id);
     @Query("SELECT vct FROM VoucherType vct WHERE vct.isDeleted = false ")
     List<VoucherType> findAll();
 }

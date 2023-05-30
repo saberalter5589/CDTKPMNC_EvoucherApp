@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { PARTNER } from "../../commons/constant";
+import { useNavigate } from "react-router-dom";
 import { getUserInfoFromLocalStorage } from "../../commons/utils";
 const Home = () => {
   const [userInfo, setUserInfo] = useState(getUserInfoFromLocalStorage());
   const navigate = useNavigate();
   useEffect(() => {
-    if (userInfo == null) {
+    if (userInfo == null || userInfo?.userId == undefined) {
       navigate("/login");
     }
   }, []);

@@ -8,4 +8,5 @@ import com.evoucherapp.evoucher.dto.response.vouchertype.GetVoucherTypeListRespo
 public interface VoucherTypeService {
     CreateVoucherTypeResponse createVoucherType(CreateVoucherTypeRequest request);
     GetVoucherTypeListResponse searchVoucherTypeList(GetVoucherTypeListRequest request);
+    void updateVoucherType(Long id, CreateVoucherTypeRequest request);
 }

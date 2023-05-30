@@ -4,8 +4,10 @@ import com.evoucherapp.evoucher.common.constant.UserType;
 import com.evoucherapp.evoucher.dto.request.partnertype.CreatePartnerTypeRequest;
 import com.evoucherapp.evoucher.dto.request.partnertype.SearchPartnerTypeRequest;
 import com.evoucherapp.evoucher.dto.request.user.GetPartnerListRequest;
+import com.evoucherapp.evoucher.dto.request.user.UpdateCustomerRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertype.CreateVoucherTypeRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertype.GetVoucherTypeListRequest;
+import com.evoucherapp.evoucher.dto.response.SuccessResponse;
 import com.evoucherapp.evoucher.dto.response.partnertype.CreatePartnerTypeResponse;
 import com.evoucherapp.evoucher.dto.response.partnertype.SearchPartnerTypeResponse;
 import com.evoucherapp.evoucher.dto.response.user.GetPartnerListResponse;
@@ -41,5 +43,12 @@ public class PartnerTypeController {
         SearchPartnerTypeRequest request = new SearchPartnerTypeRequest();
         SearchPartnerTypeResponse response = partnerTypeService.searchPartnerType(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/partner-type/{id}")
+    public ResponseEntity<SuccessResponse> updatePartnerType(@PathVariable("id") Long id, @RequestBody CreatePartnerTypeRequest request){
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN));
+        partnerTypeService.updatePartnerType(id, request);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 }

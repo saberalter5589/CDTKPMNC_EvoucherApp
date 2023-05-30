@@ -72,4 +72,19 @@ public class VoucherTypeServiceImpl implements VoucherTypeService {
         response.setVoucherTypeDtoList(dtos);
         return response;
     }
+
+    @Override
+    @Transactional
+    public void updateVoucherType(Long id, CreateVoucherTypeRequest request) {
+        Long userId = request.getAuthentication().getUserId();
+        VoucherType voucherType = voucherTypeRepository.findByVoucherTypeId(id);
+        if(voucherType == null){
+            MessageInfo messageInfo = MessageUtil.formatMessage(10002, "voucher_type_code");
+            throw new DataExistException(messageInfo);
+        }
+        voucherType.setVoucherTypeCode(request.getVoucherTypeCode());
+        voucherType.setVoucherTypeName(request.getVoucherTypeName());
+        EntityDxo.preCreate(userId, voucherType);
+        voucherTypeRepository.save(voucherType);
+    }
 }
