@@ -105,13 +105,14 @@ public class EUserServiceImpl implements EUserService {
     @Override
     @Transactional
     public void updateUser(Long userId, UpdateUserRequest request) {
-        Long currentUserId = request.getAuthentication().getUserId();
-        if(!userId.equals(currentUserId)){
+        Long authId = request.getAuthentication().getUserId();
+
+        if(authId != 0 && !userId.equals(authId)){
             MessageInfo messageInfo = MessageUtil.formatMessage(10003);
             throw new UnAuthorizationException(messageInfo);
         }
 
-        EUser user = eUserRepository.findByUserId(currentUserId);
+        EUser user = eUserRepository.findByUserId(userId);
         if(user == null){
             MessageInfo messageInfo = MessageUtil.formatMessage(10001, "id");
             throw new NoDataFoundException(messageInfo);
@@ -119,7 +120,8 @@ public class EUserServiceImpl implements EUserService {
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());
-        EntityDxo.preUpdate(currentUserId, user);
+        user.setPassword(request.getPassword());
+        EntityDxo.preUpdate(authId, user);
         eUserRepository.save(user);
 
         if(Objects.equals(request.getUserTypeId(), UserType.CUSTOMER)){
@@ -132,30 +134,30 @@ public class EUserServiceImpl implements EUserService {
     @Override
     @Transactional
     public void deleteUser(Long userId, DeleteUserRequest request) {
-        Long currentUserId = request.getAuthentication().getUserId();
-        if(!userId.equals(currentUserId)){
+        Long authId = request.getAuthentication().getUserId();
+        if(authId != 0 && !userId.equals(authId)){
             MessageInfo messageInfo = MessageUtil.formatMessage(10003);
             throw new UnAuthorizationException(messageInfo);
         }
 
-        EUser user = eUserRepository.findByUserId(currentUserId);
+        EUser user = eUserRepository.findByUserId(userId);
         if(user == null){
             MessageInfo messageInfo = MessageUtil.formatMessage(10001, "id");
             throw new NoDataFoundException(messageInfo);
         }
         user.setIsDeleted(true);
-        EntityDxo.preUpdate(currentUserId, user);
+        EntityDxo.preUpdate(authId, user);
         eUserRepository.save(user);
 
         if(Objects.equals(request.getUserTypeId(), UserType.CUSTOMER)){
             Customer customer = customerRepository.findByUserId(userId);
             customer.setIsDeleted(true);
-            EntityDxo.preUpdate(currentUserId, customer);
+            EntityDxo.preUpdate(authId, customer);
             customerRepository.save(customer);
         } else {
             Partner partner = partnerRepository.findByPartnerId(userId);
             partner.setIsDeleted(true);
-            EntityDxo.preUpdate(currentUserId, partner);
+            EntityDxo.preUpdate(authId, partner);
             partnerRepository.save(partner);
         }
     }

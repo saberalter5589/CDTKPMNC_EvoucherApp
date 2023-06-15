@@ -98,6 +98,28 @@ const Campaign = () => {
     loadCampaign(params);
   };
 
+  const deleteCampaign = async (e, id) => {
+    e.preventDefault();
+    let config = {
+      headers: {
+        userId: userInfo?.userId,
+        password: userInfo?.password,
+      },
+    };
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/api/campaign/${id}`,
+        config
+      );
+      if (res.status == 200) {
+        toast.success("Success");
+        loadCampaign();
+      }
+    } catch (error) {
+      toast.error("Error");
+    }
+  };
+
   return (
     <div className="col-lg-12">
       <div>
@@ -258,6 +280,14 @@ const Campaign = () => {
                       >
                         Edit
                       </Link>
+                    )}
+                    {userInfo?.userTypeId == PARTNER && (
+                      <button
+                        className="btn btn-danger mx-2"
+                        onClick={(e) => deleteCampaign(e, campaign?.campainId)}
+                      >
+                        Delete
+                      </button>
                     )}
                     {userInfo?.userTypeId == CUSTOMER &&
                       campaign?.status == CAMPAIGN_STATUS.IN_PROGRESS && (

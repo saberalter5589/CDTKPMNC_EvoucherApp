@@ -1,6 +1,7 @@
 package com.evoucherapp.evoucher.controller;
 
 import com.evoucherapp.evoucher.common.constant.UserType;
+import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.branch.CreateBranchRequest;
 import com.evoucherapp.evoucher.dto.request.branch.GetBranchListRequest;
 import com.evoucherapp.evoucher.dto.request.partnertype.CreatePartnerTypeRequest;
@@ -55,6 +56,19 @@ public class VoucherTypeController {
     public ResponseEntity<SuccessResponse> updatePartnerType(@PathVariable("id") Long id, @RequestBody CreateVoucherTypeRequest request){
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN));
         voucherTypeService.updateVoucherType(id, request);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/voucher-type/{id}")
+    public ResponseEntity<SuccessResponse> deletePartnerType(
+            @RequestHeader("userId") Long userId,
+            @RequestHeader("password") String password,
+            @PathVariable("id") Long id){
+        BaseRequest request = new BaseRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN));
+        voucherTypeService.deleteVoucherType(id, request);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 }

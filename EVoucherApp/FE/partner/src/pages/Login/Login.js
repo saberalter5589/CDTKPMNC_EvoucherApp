@@ -75,6 +75,7 @@ const Login = (props) => {
                   Password <span className="errmsg">*</span>
                 </label>
                 <input
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="form-control"

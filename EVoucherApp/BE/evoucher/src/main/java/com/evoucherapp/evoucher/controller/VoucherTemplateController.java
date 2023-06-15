@@ -1,6 +1,7 @@
 package com.evoucherapp.evoucher.controller;
 
 import com.evoucherapp.evoucher.common.constant.UserType;
+import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.CreateCampaignRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.SearchCampaignRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertemplate.CreateVoucherTemplateRequest;
@@ -68,6 +69,19 @@ public class VoucherTemplateController {
     public ResponseEntity<SuccessResponse> updateVoucherTemplate(@PathVariable("id") Long id, @RequestBody CreateVoucherTemplateRequest request){
         authenticationService.validateUser(request, Arrays.asList(UserType.PARTNER));
         voucherTemplateService.updateVoucherTemplate(id, request);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/voucher-template/{id}")
+    public ResponseEntity<SuccessResponse> deleteVoucherTemplate(
+            @RequestHeader("userId") Long userId,
+            @RequestHeader("password") String password,
+            @PathVariable("id") Long id){
+        BaseRequest request = new BaseRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        authenticationService.validateUser(request, Arrays.asList(UserType.PARTNER));
+        voucherTemplateService.deleteVoucherTemplate(id, request);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 }

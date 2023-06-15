@@ -2,6 +2,7 @@ package com.evoucherapp.evoucher.service.impl;
 
 import com.evoucherapp.evoucher.dto.MessageInfo;
 import com.evoucherapp.evoucher.dto.obj.VoucherTypeDto;
+import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertype.CreateVoucherTypeRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertype.GetVoucherTypeListRequest;
 import com.evoucherapp.evoucher.dto.response.vouchertype.CreateVoucherTypeResponse;
@@ -84,7 +85,21 @@ public class VoucherTypeServiceImpl implements VoucherTypeService {
         }
         voucherType.setVoucherTypeCode(request.getVoucherTypeCode());
         voucherType.setVoucherTypeName(request.getVoucherTypeName());
-        EntityDxo.preCreate(userId, voucherType);
+        EntityDxo.preUpdate(userId, voucherType);
+        voucherTypeRepository.save(voucherType);
+    }
+
+    @Override
+    @Transactional
+    public void deleteVoucherType(Long id, BaseRequest request) {
+        Long userId = request.getAuthentication().getUserId();
+        VoucherType voucherType = voucherTypeRepository.findByVoucherTypeId(id);
+        if(voucherType == null){
+            MessageInfo messageInfo = MessageUtil.formatMessage(10002, "voucher_type_code");
+            throw new DataExistException(messageInfo);
+        }
+        voucherType.setIsDeleted(true);
+        EntityDxo.preUpdate(userId, voucherType);
         voucherTypeRepository.save(voucherType);
     }
 }

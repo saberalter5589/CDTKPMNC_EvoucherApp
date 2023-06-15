@@ -5,6 +5,7 @@ import com.evoucherapp.evoucher.common.constant.DateTimeFormat;
 import com.evoucherapp.evoucher.common.constant.UserType;
 import com.evoucherapp.evoucher.dto.MessageInfo;
 import com.evoucherapp.evoucher.dto.obj.CampaignDto;
+import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.CreateCampaignRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.SearchCampaignRequest;
 import com.evoucherapp.evoucher.dto.response.campaign.CreateCampaignResponse;
@@ -112,13 +113,14 @@ public class CampaignServiceImpl implements CampaignService {
         campaign.setDescription(request.getDescription());
         campaign.setNote(request.getNote());
         campaign.setStatus(request.getStatus());
-        EntityDxo.preCreate(partnerId, campaign);
+        EntityDxo.preUpdate(partnerId, campaign);
         campaignRepository.save(campaign);
 
         createNewCampaignGame(partnerId, campaignId, request);
     }
 
     @Override
+    @Transactional
     public SearchCampaignResponse searchCampaign(SearchCampaignRequest request) {
         Long userId = request.getAuthentication().getUserId();
         EUser user = userRepository.findByUserId(userId);
@@ -131,6 +133,20 @@ public class CampaignServiceImpl implements CampaignService {
         SearchCampaignResponse response = new SearchCampaignResponse();
         response.setCampaignDtoList(dtoList);
         return response;
+    }
+
+    @Override
+    @Transactional
+    public void deleteCampaign(Long campaignId, BaseRequest request) {
+        Long partnerId = request.getAuthentication().getUserId();
+        Campaign campaign = campaignRepository.findByCampaignId(campaignId);
+        if(campaign == null){
+            MessageInfo messageInfo = MessageUtil.formatMessage(10001, "campain_id");
+            throw new NoDataFoundException(messageInfo);
+        }
+        campaign.setIsDeleted(true);
+        EntityDxo.preUpdate(partnerId, campaign);
+        campaignRepository.save(campaign);
     }
 
     private void createNewCampaignGame(Long partnerId, Long campaignId, CreateCampaignRequest request){

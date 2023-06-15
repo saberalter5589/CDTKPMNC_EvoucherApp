@@ -11,4 +11,5 @@ public class UpdateUserRequest extends BaseRequest {
     String email;
     String phone;
     String address;
+    String password;
 }

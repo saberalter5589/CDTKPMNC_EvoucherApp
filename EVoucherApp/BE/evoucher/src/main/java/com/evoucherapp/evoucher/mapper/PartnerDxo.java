@@ -36,6 +36,9 @@ public class PartnerDxo {
         dto.setPartnerTypeId(obj[6] != null ? ObjectUtil.getValueOfLong(obj[6]) : null);
         dto.setPartnerName(obj[7] != null ? ObjectUtil.getValueOfString(obj[7]) : null);
         dto.setPartnerNote(obj[8] != null ? ObjectUtil.getValueOfString(obj[8]) : null);
+        dto.setPartnerTypeCode(obj[9] != null ? ObjectUtil.getValueOfString(obj[9]) : null);
+        dto.setPartnerTypeName(obj[10] != null ? ObjectUtil.getValueOfString(obj[10]) : null);
+        dto.setPassword(obj[11] != null ? ObjectUtil.getValueOfString(obj[11]) : null);
         dto.setIsDeleted(false);
         return dto;
     }

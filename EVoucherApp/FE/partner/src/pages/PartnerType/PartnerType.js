@@ -32,6 +32,28 @@ const PartnerType = () => {
     setPartnerTypeList(response?.data?.partnerTypeDtoList);
   };
 
+  const deletePartnerType = async (e, id) => {
+    e.preventDefault();
+    let config = {
+      headers: {
+        userId: userInfo?.userId,
+        password: userInfo?.password,
+      },
+    };
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/api/partner-type/${id}`,
+        config
+      );
+      if (res.status == 200) {
+        toast.success("Success");
+        loadPartnerType();
+      }
+    } catch (error) {
+      toast.error("Error");
+    }
+  };
+
   return (
     <div className="col-lg-12">
       <div>
@@ -79,6 +101,12 @@ const PartnerType = () => {
                     >
                       Edit
                     </Link>
+                    <button
+                      className="btn btn-danger mx-2"
+                      onClick={(e) => deletePartnerType(e, pt?.partnerTypeId)}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               </>

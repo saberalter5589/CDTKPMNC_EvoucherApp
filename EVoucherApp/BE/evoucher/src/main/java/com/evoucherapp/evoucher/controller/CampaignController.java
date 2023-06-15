@@ -1,6 +1,7 @@
 package com.evoucherapp.evoucher.controller;
 
 import com.evoucherapp.evoucher.common.constant.UserType;
+import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.branch.CreateBranchRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.CreateCampaignRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.SearchCampaignRequest;
@@ -39,6 +40,19 @@ public class CampaignController {
     public ResponseEntity<SuccessResponse> updateCampaign(@PathVariable("id") Long id, @RequestBody CreateCampaignRequest request){
         authenticationService.validateUser(request, Arrays.asList(UserType.PARTNER));
         campaignService.updateCampaign(id, request);
+        return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/campaign/{id}")
+    public ResponseEntity<SuccessResponse> deleteCampaign(
+            @RequestHeader("userId") Long userId,
+            @RequestHeader("password") String password,
+            @PathVariable("id") Long id){
+        BaseRequest request = new BaseRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        authenticationService.validateUser(request, Arrays.asList(UserType.PARTNER));
+        campaignService.deleteCampaign(id, request);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 

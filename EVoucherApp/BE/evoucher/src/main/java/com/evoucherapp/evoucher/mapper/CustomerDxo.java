@@ -36,6 +36,7 @@ public class CustomerDxo {
         dto.setCustomerName(obj[6] != null ? ObjectUtil.getValueOfString(obj[6]) : null);
         dto.setIsDeleted(false);
         dto.setBirthday(obj[7] != null ? DateTimeUtil.convertFromDateToString((Date)obj[7], DateTimeFormat.DATE): null);
+        dto.setPassword(obj[8] != null ? ObjectUtil.getValueOfString(obj[8]) : null);
         return dto;
     }
 }

@@ -93,7 +93,6 @@ const VoucherTemplate = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-
     let params = {
       voucherTemplateId: voucherTemplateId ? voucherTemplateId : null,
       voucherTemplateCode: voucherTemplateCode ? voucherTemplateCode : "",
@@ -105,6 +104,28 @@ const VoucherTemplate = () => {
       dateEnd: dateEnd ? convertFromDateToString(dateEnd) : "",
     };
     loadVoucherTemplateList(params);
+  };
+
+  const deleteVoucherTemplate = async (e, id) => {
+    e.preventDefault();
+    let config = {
+      headers: {
+        userId: userInfo?.userId,
+        password: userInfo?.password,
+      },
+    };
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/api/voucher-template/${id}`,
+        config
+      );
+      if (res.status == 200) {
+        toast.success("Success");
+        loadVoucherTemplateList();
+      }
+    } catch (error) {
+      toast.error("Error");
+    }
   };
 
   return (
@@ -255,6 +276,14 @@ const VoucherTemplate = () => {
                     >
                       Edit
                     </Link>
+                    <button
+                      className="btn btn-danger mx-2"
+                      onClick={(e) =>
+                        deleteVoucherTemplate(e, vt?.voucherTemplateId)
+                      }
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               </>

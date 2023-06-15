@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { CUSTOMER, PARTNER } from "../../commons/constant";
+import { ADMIN, CUSTOMER, PARTNER } from "../../commons/constant";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,7 +18,6 @@ const PartnerDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [username, setUserName] = useState("");
-
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -26,13 +25,16 @@ const PartnerDetail = () => {
   const [partnerName, setPartnerName] = useState("");
   const [note, setNote] = useState("");
   const [partnerTypeList, setPartnerTypeList] = useState([]);
+  const [password, setPassword] = useState();
 
   useEffect(() => {
     if (userInfo == null) {
       navigate("/login");
     }
     getPartnerTypeList();
-    loadPartner();
+    if (id != -1) {
+      loadPartner();
+    }
   }, []);
 
   const getPartnerTypeList = async () => {
@@ -65,6 +67,7 @@ const PartnerDetail = () => {
     setPartnerName(info?.partnerName);
     setPartnerTypeId(info?.partnerTypeId);
     setNote(info?.partnerNote);
+    setPassword(info?.password);
   };
 
   const handleSubmit = async (e) => {
@@ -82,16 +85,46 @@ const PartnerDetail = () => {
         partnerName: partnerName,
         partnerTypeId: partnerTypeId,
         note: note,
+        password: password,
       };
-      const res = await axios.put(
-        `http://localhost:8080/api/partner/${id}`,
-        payload
-      );
-      if (res.status == 200) {
-        toast.success("Success");
+
+      if (id != -1) {
+        const res = await axios.put(
+          `http://localhost:8080/api/partner/${id}`,
+          payload
+        );
+        if (res.status == 200) {
+          toast.success("Success");
+          navigateAfterUpdate();
+        }
+      } else {
+        const res = await axios.post(
+          `http://localhost:8080/api/partner/create`,
+          payload
+        );
+        if (res.status == 200) {
+          toast.success("Success");
+          navigateAfterUpdate();
+        }
       }
     } catch (error) {
       toast.error("Error");
+    }
+  };
+
+  const renderBackButtonDestination = () => {
+    if (userInfo?.userTypeId == ADMIN) {
+      return "/partner";
+    } else {
+      //return "/campaign";
+    }
+  };
+
+  const navigateAfterUpdate = () => {
+    if (userInfo?.userTypeId == ADMIN) {
+      navigate("/partner");
+    } else {
+      //navigate("/campaign");
     }
   };
 
@@ -101,11 +134,11 @@ const PartnerDetail = () => {
         <form onSubmit={handleSubmit}>
           <div className="card">
             <div className="card-header">
-              <h1>Edit Partner info</h1>
+              <h1>{id == -1 ? "Create Partner" : "Edit Partner"}</h1>
             </div>
             <div className="card-body">
               <div className="row">
-                <div className="col-lg-12">
+                <div className="col-lg-6">
                   <div className="form-group">
                     <label>Username</label>
                     <input
@@ -115,8 +148,19 @@ const PartnerDetail = () => {
                     ></input>
                   </div>
                 </div>
+                <div className="col-lg-6">
+                  <div className="form-group">
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="form-control"
+                    ></input>
+                  </div>
+                </div>
               </div>
-              <div className="col-lg-6">
+              <div className="col-lg-12">
                 <div className="form-group">
                   <label>Partner Type</label>
                   <select
@@ -191,11 +235,16 @@ const PartnerDetail = () => {
             </div>
             <div className="card-footer text-center">
               <button type="submit" className="btn btn-primary">
-                Update
+                {id == -1 ? "Create" : "Edit"}
               </button>
-              <Link className="btn btn-danger " to={"/campaign"}>
-                Back
-              </Link>
+              {userInfo?.userTypeId == ADMIN && (
+                <Link
+                  className="btn btn-danger "
+                  to={renderBackButtonDestination()}
+                >
+                  Back
+                </Link>
+              )}
             </div>
           </div>
         </form>

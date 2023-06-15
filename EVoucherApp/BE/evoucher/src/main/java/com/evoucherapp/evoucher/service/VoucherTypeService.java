@@ -1,5 +1,6 @@
 package com.evoucherapp.evoucher.service;
 
+import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertype.CreateVoucherTypeRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertype.GetVoucherTypeListRequest;
 import com.evoucherapp.evoucher.dto.response.vouchertype.CreateVoucherTypeResponse;
@@ -9,4 +10,5 @@ public interface VoucherTypeService {
     CreateVoucherTypeResponse createVoucherType(CreateVoucherTypeRequest request);
     GetVoucherTypeListResponse searchVoucherTypeList(GetVoucherTypeListRequest request);
     void updateVoucherType(Long id, CreateVoucherTypeRequest request);
+    void deleteVoucherType(Long id, BaseRequest request);
 }

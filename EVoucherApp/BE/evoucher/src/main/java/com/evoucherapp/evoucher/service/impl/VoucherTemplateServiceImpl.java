@@ -5,6 +5,7 @@ import com.evoucherapp.evoucher.common.constant.DateTimeFormat;
 import com.evoucherapp.evoucher.common.constant.UserType;
 import com.evoucherapp.evoucher.dto.MessageInfo;
 import com.evoucherapp.evoucher.dto.obj.VoucherTemplateDto;
+import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertemplate.CreateVoucherTemplateRequest;
 import com.evoucherapp.evoucher.dto.request.vouchertemplate.SearchVoucherTemplateRequest;
 import com.evoucherapp.evoucher.dto.response.vouchertemplate.CreateVoucherTemplateResponse;
@@ -151,6 +152,20 @@ public class VoucherTemplateServiceImpl implements VoucherTemplateService {
 
         createOrUpdateBranch(partnerId, voucherTemplate.getVoucherTemplateId(), request);
         // TODO: Delete all dependant [voucher]
+    }
+
+    @Override
+    @Transactional
+    public void deleteVoucherTemplate(Long vTemplateId, BaseRequest request) {
+        Long partnerId = request.getAuthentication().getUserId();
+        VoucherTemplate voucherTemplate = voucherTemplateRepository.findByVoucherTemplateId(vTemplateId);
+        if(voucherTemplate == null){
+            MessageInfo messageInfo = MessageUtil.formatMessage(10001, "voucher_template_id");
+            throw new NoDataFoundException(messageInfo);
+        }
+        voucherTemplate.setIsDeleted(true);
+        EntityDxo.preUpdate(partnerId, voucherTemplate);
+        voucherTemplateRepository.save(voucherTemplate);
     }
 
     private void createOrUpdateBranch(Long userId, Long vTemplateId, CreateVoucherTemplateRequest request){

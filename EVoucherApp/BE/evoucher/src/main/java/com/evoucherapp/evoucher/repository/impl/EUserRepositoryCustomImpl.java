@@ -25,7 +25,7 @@ public class EUserRepositoryCustomImpl implements EUserRepositoryCustom {
         HashMap<String, Object> params = new HashMap<>();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT eu.user_id, eu.user_type_id, eu.user_name, eu.email, eu.phone, eu.address, ");
-        sql.append("cr.customer_name, cr.birthday ");
+        sql.append("cr.customer_name, cr.birthday, eu.password ");
         sql.append("FROM e_user eu ");
         sql.append("LEFT JOIN customer cr ON eu.user_id = cr.customer_id ");
         sql.append("WHERE eu.is_deleted = false AND cr.is_deleted = false AND eu.user_type_id =:userTypeId ");
@@ -74,9 +74,10 @@ public class EUserRepositoryCustomImpl implements EUserRepositoryCustom {
         HashMap<String, Object> params = new HashMap<>();
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT eu.user_id, eu.user_type_id, eu.user_name, eu.email, eu.phone, eu.address, ");
-        sql.append("pn.partner_type_id, pn.partner_name, pn.note ");
+        sql.append("pn.partner_type_id, pn.partner_name, pn.note, pnt.partner_type_code, pnt.partner_type_name, eu.password ");
         sql.append("FROM e_user eu ");
         sql.append("LEFT JOIN partner pn ON eu.user_id = pn.partner_id ");
+        sql.append("LEFT JOIN partner_type pnt ON pn.partner_type_id = pnt.partner_type_id ");
         sql.append("WHERE eu.is_deleted = false AND pn.is_deleted = false AND eu.user_type_id =:userTypeId ");
         params.put("userTypeId", UserType.PARTNER);
         if(request.getId() != null){
@@ -105,7 +106,7 @@ public class EUserRepositoryCustomImpl implements EUserRepositoryCustom {
         }
 
         if(request.getPartnerTypeId() != null){
-            sql.append("AND eu.partner_type_id =:partnerTypeId ");
+            sql.append("AND pn.partner_type_id =:partnerTypeId ");
             params.put("partnerTypeId", request.getPartnerTypeId());
         }
 

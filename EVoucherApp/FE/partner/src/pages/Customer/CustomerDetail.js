@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { CUSTOMER, PARTNER } from "../../commons/constant";
+import { CUSTOMER, ADMIN } from "../../commons/constant";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,12 +23,16 @@ const CustomerDetail = () => {
   const [address, setAddress] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [birthday, setBirthDay] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
+    console.log(userInfo);
     if (userInfo == null) {
       navigate("/login");
     }
-    loadCustomer();
+    if (id != -1) {
+      loadCustomer();
+    }
   }, []);
 
   const loadCustomer = async () => {
@@ -52,6 +56,7 @@ const CustomerDetail = () => {
     setAddress(info?.address);
     setCustomerName(info?.customerName);
     setBirthDay(convertFromStringToDate(info?.birthday));
+    setPassword(info?.password);
   };
 
   const handleSubmit = async (e) => {
@@ -68,17 +73,47 @@ const CustomerDetail = () => {
         phone: phone,
         address: address,
         customerName: customerName,
+        password: password,
         birthday: convertFromDateToString(birthday),
       };
-      const res = await axios.put(
-        `http://localhost:8080/api/customer/${id}`,
-        payload
-      );
-      if (res.status == 200) {
-        toast.success("Success");
+
+      if (id != -1) {
+        const res = await axios.put(
+          `http://localhost:8080/api/customer/${id}`,
+          payload
+        );
+        if (res.status == 200) {
+          toast.success("Success");
+          navigateAfterUpdate();
+        }
+      } else {
+        const res = await axios.post(
+          `http://localhost:8080/api/customer/create`,
+          payload
+        );
+        if (res.status == 200) {
+          toast.success("Success");
+          navigateAfterUpdate();
+        }
       }
     } catch (error) {
       toast.error("Error");
+    }
+  };
+
+  const renderBackButtonDestination = () => {
+    if (userInfo?.userTypeId == ADMIN) {
+      return "/customer";
+    } else {
+      //return "/campaign";
+    }
+  };
+
+  const navigateAfterUpdate = () => {
+    if (userInfo?.userTypeId == ADMIN) {
+      navigate("/customer");
+    } else {
+      //navigate("/campaign");
     }
   };
 
@@ -88,11 +123,11 @@ const CustomerDetail = () => {
         <form onSubmit={handleSubmit}>
           <div className="card">
             <div className="card-header">
-              <h1>Update customer info</h1>
+              <h1>{id == -1 ? "Create Customer" : "Edit Customer"}</h1>
             </div>
             <div className="card-body">
               <div className="row">
-                <div className="col-lg-12">
+                <div className="col-lg-6">
                   <div className="form-group">
                     <label>Username</label>
                     <input
@@ -102,8 +137,39 @@ const CustomerDetail = () => {
                     ></input>
                   </div>
                 </div>
+                <div className="col-lg-6">
+                  <div className="form-group">
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="form-control"
+                    ></input>
+                  </div>
+                </div>
               </div>
               <div className="row">
+                <div className="col-lg-6">
+                  <div className="form-group">
+                    <label>Name</label>
+                    <input
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      className="form-control"
+                    ></input>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="form-group">
+                    <label>Phone</label>
+                    <input
+                      value={phone}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="form-control"
+                    ></input>
+                  </div>
+                </div>
                 <div className="col-lg-6">
                   <div className="form-group">
                     <label>Email</label>
@@ -116,18 +182,6 @@ const CustomerDetail = () => {
                 </div>
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Phone</label>
-                    <input
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="form-control"
-                    ></input>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-lg-6">
-                  <div className="form-group">
                     <label>Address</label>
                     <input
                       value={address}
@@ -136,18 +190,6 @@ const CustomerDetail = () => {
                     ></input>
                   </div>
                 </div>
-                <div className="col-lg-6">
-                  <div className="form-group">
-                    <label>Name</label>
-                    <input
-                      value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
-                      className="form-control"
-                    ></input>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
                 <div className="col-lg-6">
                   <div className="form-group">
                     <label>Birthday</label>
@@ -163,11 +205,16 @@ const CustomerDetail = () => {
             </div>
             <div className="card-footer text-center">
               <button type="submit" className="btn btn-primary">
-                Update
+                {id == -1 ? "Create" : "Edit"}
               </button>
-              <Link className="btn btn-danger " to={"/home"}>
-                Back
-              </Link>
+              {userInfo?.userTypeId == ADMIN && (
+                <Link
+                  className="btn btn-danger "
+                  to={renderBackButtonDestination()}
+                >
+                  Back
+                </Link>
+              )}
             </div>
           </div>
         </form>

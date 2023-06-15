@@ -12,4 +12,6 @@ public interface PartnerTypeRepository extends JpaRepository<PartnerType, Long> 
     @Query("SELECT pt FROM PartnerType pt WHERE pt.partnerTypeId =:id AND pt.isDeleted = false")
     PartnerType findByPartnerTypeId(@Param("id") Long id);
 
+    @Query("SELECT pt FROM PartnerType pt WHERE pt.isDeleted = false")
+    List<PartnerType> findAll();
 }

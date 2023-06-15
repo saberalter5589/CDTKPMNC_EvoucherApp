@@ -2,6 +2,7 @@ package com.evoucherapp.evoucher.service.impl;
 
 import com.evoucherapp.evoucher.dto.obj.PartnerTypeDto;
 import com.evoucherapp.evoucher.dto.obj.VoucherTypeDto;
+import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.partnertype.CreatePartnerTypeRequest;
 import com.evoucherapp.evoucher.dto.request.partnertype.SearchPartnerTypeRequest;
 import com.evoucherapp.evoucher.dto.response.partnertype.CreatePartnerTypeResponse;
@@ -69,14 +70,26 @@ public class PartnerTypeServiceImpl implements PartnerTypeService {
     @Transactional
     public void updatePartnerType(Long id, CreatePartnerTypeRequest request) {
         Long userId = request.getAuthentication().getUserId();
-
         PartnerType partnerType = partnerTypeRepository.findByPartnerTypeId(id);
         if(partnerType == null){
             return;
         }
         partnerType.setPartnerTypeCode(request.getPartnerTypeCode());
         partnerType.setPartnerTypeName(request.getPartnerTypeName());
-        EntityDxo.preCreate(userId, partnerType);
+        EntityDxo.preUpdate(userId, partnerType);
+        partnerTypeRepository.save(partnerType);
+    }
+
+    @Override
+    @Transactional
+    public void deletePartnerType(Long id, BaseRequest request) {
+        Long userId = request.getAuthentication().getUserId();
+        PartnerType partnerType = partnerTypeRepository.findByPartnerTypeId(id);
+        if(partnerType == null){
+            return;
+        }
+        partnerType.setIsDeleted(true);
+        EntityDxo.preUpdate(userId, partnerType);
         partnerTypeRepository.save(partnerType);
     }
 }

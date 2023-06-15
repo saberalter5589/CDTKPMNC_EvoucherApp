@@ -28,6 +28,16 @@ const Header = (props) => {
             class: "nav-link",
           },
           {
+            to: "/partner",
+            name: "Partner",
+            class: "nav-link",
+          },
+          {
+            to: "/customer",
+            name: "Customer",
+            class: "nav-link",
+          },
+          {
             to: "/login",
             name: "Logout",
             class: "nav-link",

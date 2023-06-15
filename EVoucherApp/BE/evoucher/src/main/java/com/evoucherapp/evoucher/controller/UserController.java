@@ -28,11 +28,19 @@ public class UserController {
     public ResponseEntity<GetCustomerListResponse> searchCustomer(
             @RequestHeader("userId") Long userId,
             @RequestHeader("password") String password,
-            @RequestParam(value = "customerId", required = false) String customerId){
+            @RequestParam(value = "customerId", required = false) String customerId,
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "customerName", required = false) String customerName){
         GetCustomerListRequest request = new GetCustomerListRequest();
         request.getAuthentication().setUserId(userId);
         request.getAuthentication().setPassword(password);
         request.setId(customerId);
+        request.setUsername(username);
+        request.setEmail(email);
+        request.setAddress(address);
+        request.setCustomerName(customerName);
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.CUSTOMER));
         GetCustomerListResponse response = eUserService.searchCustomer(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -43,12 +51,21 @@ public class UserController {
             @RequestHeader("userId") Long userId,
             @RequestHeader("password") String password,
             @RequestParam(value = "partnerId", required = false) String partnerId,
-            @RequestParam(value="partnerName", required = false) String partnerName){
+            @RequestParam(value = "partnerName", required = false) String partnerName,
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "partnerTypeId", required = false) Long partnerTypeId
+            ){
         GetPartnerListRequest request = new GetPartnerListRequest();
         request.getAuthentication().setUserId(userId);
         request.getAuthentication().setPassword(password);
         request.setId(partnerId);
         request.setPartnerName(partnerName);
+        request.setUsername(username);
+        request.setEmail(email);
+        request.setAddress(address);
+        request.setPartnerTypeId(partnerTypeId);
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN,UserType.PARTNER, UserType.CUSTOMER));
         GetPartnerListResponse response = eUserService.searchPartner(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -70,7 +87,7 @@ public class UserController {
 
     @PutMapping("/customer/{id}")
     public ResponseEntity<SuccessResponse> editCustomer(@PathVariable("id") Long id, @RequestBody UpdateCustomerRequest request){
-        authenticationService.validateUser(request, Arrays.asList(UserType.CUSTOMER));
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.CUSTOMER));
         request.setUserTypeId(UserType.CUSTOMER);
         eUserService.updateUser(id, request);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
@@ -78,23 +95,29 @@ public class UserController {
 
     @PutMapping("/partner/{id}")
     public ResponseEntity<SuccessResponse> editPartner(@PathVariable("id") Long id, @RequestBody UpdatePartnerRequest request){
-        authenticationService.validateUser(request, Arrays.asList(UserType.PARTNER));
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER));
         request.setUserTypeId(UserType.PARTNER);
         eUserService.updateUser(id, request);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @DeleteMapping("/customer/{id}")
-    public ResponseEntity<SuccessResponse> deleteCustomer(@PathVariable("id") Long id, @RequestBody DeleteUserRequest request){
-        authenticationService.validateUser(request, Arrays.asList(UserType.CUSTOMER));
+    public ResponseEntity<SuccessResponse> deleteCustomer(@PathVariable("id") Long id, @RequestHeader("userId") Long userId, @RequestHeader("password") String password){
+        DeleteUserRequest request = new DeleteUserRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN));
         request.setUserTypeId(UserType.CUSTOMER);
         eUserService.deleteUser(id, request);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);
     }
 
     @DeleteMapping("/partner/{id}")
-    public ResponseEntity<SuccessResponse> deletePartner(@PathVariable("id") Long id, @RequestBody DeleteUserRequest request){
-        authenticationService.validateUser(request, Arrays.asList(UserType.CUSTOMER));
+    public ResponseEntity<SuccessResponse> deletePartner(@PathVariable("id") Long id, @RequestHeader("userId") Long userId, @RequestHeader("password") String password){
+        DeleteUserRequest request = new DeleteUserRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN));
         request.setUserTypeId(UserType.PARTNER);
         eUserService.deleteUser(id, request);
         return new ResponseEntity<>(new SuccessResponse(), HttpStatus.OK);

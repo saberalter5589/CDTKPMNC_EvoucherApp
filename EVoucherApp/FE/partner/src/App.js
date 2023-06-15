@@ -26,6 +26,8 @@ import PartnerType from "./pages/PartnerType/PartnerType";
 import VoucherType from "./pages/VoucherType/VoucherType";
 import VoucherTypeDetail from "./pages/VoucherType/VoucherTypeDetail";
 import PartnerTypeDetail from "./pages/PartnerType/PartnerTypeDetail";
+import Partner from "./pages/Partner/Partner";
+import Customer from "./pages/Customer/Customer";
 
 function App() {
   const [isLogin, setIsLogin] = useState(true);
@@ -59,7 +61,9 @@ function App() {
           <Route path="/game" element={<Game />} />
           <Route path="/voucher" element={<Voucher />} />
           <Route path="/voucher-detail/:id" element={<VoucherDetail />} />
+          <Route path="/customer" element={<Customer />} />
           <Route path="/customer-detail/:id" element={<CustomerDetail />} />
+          <Route path="/partner" element={<Partner />} />
           <Route path="/partner-detail/:id" element={<PartnerDetail />} />
           <Route path="/partner-type" element={<PartnerType />} />
           <Route
