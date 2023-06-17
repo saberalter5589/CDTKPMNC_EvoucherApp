@@ -5,11 +5,14 @@ import com.evoucherapp.evoucher.common.constant.DateTimeFormat;
 import com.evoucherapp.evoucher.common.constant.UserType;
 import com.evoucherapp.evoucher.dto.MessageInfo;
 import com.evoucherapp.evoucher.dto.obj.CampaignDto;
+import com.evoucherapp.evoucher.dto.obj.statistic.CampaignStatisticDto;
 import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.CreateCampaignRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.SearchCampaignRequest;
+import com.evoucherapp.evoucher.dto.request.campaign.SearchCampaignStatisticRequest;
 import com.evoucherapp.evoucher.dto.response.campaign.CreateCampaignResponse;
 import com.evoucherapp.evoucher.dto.response.campaign.SearchCampaignResponse;
+import com.evoucherapp.evoucher.dto.response.campaign.SearchCampaignStatisticResponse;
 import com.evoucherapp.evoucher.entity.Campaign;
 import com.evoucherapp.evoucher.entity.CampaignGame;
 import com.evoucherapp.evoucher.entity.EUser;
@@ -17,6 +20,7 @@ import com.evoucherapp.evoucher.exception.DataExistException;
 import com.evoucherapp.evoucher.exception.NoDataFoundException;
 import com.evoucherapp.evoucher.exception.UnAuthorizationException;
 import com.evoucherapp.evoucher.mapper.CampaignDxo;
+import com.evoucherapp.evoucher.mapper.CampaignStatisticDxo;
 import com.evoucherapp.evoucher.mapper.EntityDxo;
 import com.evoucherapp.evoucher.repository.CampaignGameRepository;
 import com.evoucherapp.evoucher.repository.CampaignRepository;
@@ -132,6 +136,16 @@ public class CampaignServiceImpl implements CampaignService {
         List<CampaignDto> dtoList = CampaignDxo.convertFromDbListToDtoList(dbSearchResult);
         SearchCampaignResponse response = new SearchCampaignResponse();
         response.setCampaignDtoList(dtoList);
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public SearchCampaignStatisticResponse searchCampaignStatistic(SearchCampaignStatisticRequest request) {
+        List<Object[]> dbSearchResult = campaignRepository.searchCampaignStatistic(request);
+        List<CampaignStatisticDto> dtoList = CampaignStatisticDxo.convertFromDbListToDtoList(dbSearchResult);
+        SearchCampaignStatisticResponse response = new SearchCampaignStatisticResponse();
+        response.setCampaignStatisticDtoList(dtoList);
         return response;
     }
 

@@ -28,6 +28,8 @@ import VoucherTypeDetail from "./pages/VoucherType/VoucherTypeDetail";
 import PartnerTypeDetail from "./pages/PartnerType/PartnerTypeDetail";
 import Partner from "./pages/Partner/Partner";
 import Customer from "./pages/Customer/Customer";
+import { ADMIN, PARTNER, CUSTOMER } from "../src/commons/constant";
+import CampaignStatistic from "./pages/Campaign/CampaignStatistic";
 
 function App() {
   const [isLogin, setIsLogin] = useState(true);
@@ -45,7 +47,31 @@ function App() {
           <Route
             path="/login"
             element={
-              <Login setIsLogin={setIsLogin} setUserInfo={setUserInfo} />
+              <Login
+                setIsLogin={setIsLogin}
+                setUserInfo={setUserInfo}
+                userTypeId={CUSTOMER}
+              />
+            }
+          />
+          <Route
+            path="partner/login"
+            element={
+              <Login
+                setIsLogin={setIsLogin}
+                setUserInfo={setUserInfo}
+                userTypeId={PARTNER}
+              />
+            }
+          />
+          <Route
+            path="admin/login"
+            element={
+              <Login
+                setIsLogin={setIsLogin}
+                setUserInfo={setUserInfo}
+                userTypeId={ADMIN}
+              />
             }
           />
           <Route path="/branch" element={<Branch />} />
@@ -53,6 +79,7 @@ function App() {
           <Route path="/campaign" element={<Campaign />} />
           <Route path="/campaign-detail/:id" element={<CampaignDetail />} />
           <Route path="/campaign-view/:id" element={<CampaignView />} />
+          <Route path="/campaign-statistic" element={<CampaignStatistic />} />
           <Route path="/voucher-template" element={<VoucherTemplate />} />
           <Route
             path="/voucher-template/:id"

@@ -5,11 +5,13 @@ import com.evoucherapp.evoucher.dto.request.BaseRequest;
 import com.evoucherapp.evoucher.dto.request.branch.CreateBranchRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.CreateCampaignRequest;
 import com.evoucherapp.evoucher.dto.request.campaign.SearchCampaignRequest;
+import com.evoucherapp.evoucher.dto.request.campaign.SearchCampaignStatisticRequest;
 import com.evoucherapp.evoucher.dto.request.user.GetPartnerListRequest;
 import com.evoucherapp.evoucher.dto.response.SuccessResponse;
 import com.evoucherapp.evoucher.dto.response.branch.CreateBranchResponse;
 import com.evoucherapp.evoucher.dto.response.campaign.CreateCampaignResponse;
 import com.evoucherapp.evoucher.dto.response.campaign.SearchCampaignResponse;
+import com.evoucherapp.evoucher.dto.response.campaign.SearchCampaignStatisticResponse;
 import com.evoucherapp.evoucher.dto.response.user.GetPartnerListResponse;
 import com.evoucherapp.evoucher.service.AuthenticationService;
 import com.evoucherapp.evoucher.service.CampaignService;
@@ -79,6 +81,21 @@ public class CampaignController {
         request.setPartnerId(partnerId);
         authenticationService.validateUser(request, Arrays.asList(UserType.ADMIN, UserType.PARTNER, UserType.CUSTOMER));
         SearchCampaignResponse response = campaignService.searchCampaign(request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/campaign/statistic")
+    public ResponseEntity<SearchCampaignStatisticResponse> searchCampaign(
+            @RequestHeader("userId") Long userId,
+            @RequestHeader("password") String password,
+            @RequestParam(value = "campaignId", required = false) Long campaignId){
+        SearchCampaignStatisticRequest request = new SearchCampaignStatisticRequest();
+        request.getAuthentication().setUserId(userId);
+        request.getAuthentication().setPassword(password);
+        request.setCampainId(campaignId);
+        request.setPartnerId(userId);
+        authenticationService.validateUser(request, Arrays.asList(UserType.PARTNER));
+        SearchCampaignStatisticResponse response = campaignService.searchCampaignStatistic(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

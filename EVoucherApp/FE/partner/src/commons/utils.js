@@ -27,3 +27,7 @@ export const convertFromDateToString = (src) => {
 export const convertFromStringToDate = (src) => {
   return new Date(src + "T00:00:00");
 };
+
+export const getRandomIndex = (max) => {
+  return Math.floor(Math.random() * max);
+};

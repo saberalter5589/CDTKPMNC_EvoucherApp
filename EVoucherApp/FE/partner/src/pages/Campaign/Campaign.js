@@ -30,7 +30,6 @@ const Campaign = () => {
     if (userInfo?.userTypeId == CUSTOMER) {
       loadPartner();
     }
-
     loadCampaign(null);
   }, []);
 

@@ -167,9 +167,9 @@ const Voucher = () => {
         <table className="table border shadow">
           <thead>
             <tr>
-              <th scope="col">Campaign Id</th>
-              <th scope="col">Campaign Code</th>
-              <th scope="col">Campaign name</th>
+              <th scope="col">Voucher Id</th>
+              <th scope="col">Voucher Code</th>
+              <th scope="col">Voucher name</th>
               <th scope="col">Partner</th>
               <th scope="col">Status</th>
               <th scope="col">Action</th>

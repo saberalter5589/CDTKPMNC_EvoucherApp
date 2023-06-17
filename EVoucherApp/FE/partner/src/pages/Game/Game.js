@@ -1,19 +1,14 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { CUSTOMER, PARTNER } from "../../commons/constant";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  getUserInfoFromLocalStorage,
-  convertFromDateToString,
-} from "../../commons/utils";
-import { CAMPAIGN_STATUS } from "../../commons/constant";
-import { convertFromStringToDate } from "../../commons/utils";
-import DatePicker from "react-datepicker";
+import { getUserInfoFromLocalStorage } from "../../commons/utils";
 import "react-datepicker/dist/react-datepicker.css";
-import Select from "react-select";
 import { useLocation } from "react-router-dom";
+import QuizGame from "./QuizGame";
+import ClickGame from "./ClickGame";
+import WordScrambleGame from "./WordScrambleGame";
+import VoucherComponent from "./VoucherComponent";
 
 const Game = () => {
   const [userInfo, setUserInfo] = useState(getUserInfoFromLocalStorage());
@@ -23,6 +18,8 @@ const Game = () => {
   const [gameInfo, setGameInfo] = useState();
   const [isFinished, setIsFinished] = useState(false);
   const [voucher, setVoucher] = useState();
+  const [isWin, setIsWin] = useState(true);
+  const [correctAnswer, setCorrectAnswer] = useState();
 
   useEffect(() => {
     loadGame();
@@ -65,121 +62,90 @@ const Game = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(voucher);
-  }, [voucher]);
+  const checkAnswer = (result) => {
+    if (result == true) {
+      getVoucher();
+    } else {
+      setIsWin(false);
+    }
+  };
 
   const renderVoucher = () => {
     if (voucher?.voucherId == -1) {
       return (
         <>
-          <div>Lucky next time</div>
+          <div class="container mt-5 justify-content-center">
+            <h1 class="d-flex justify-content-center row">
+              Sorry, Wish you luck next time
+            </h1>
+            <div className="row">
+              <div class="col-4 d-flex justify-content-center"></div>
+              <div class="col-4 d-flex justify-content-center">
+                <Link className=" btn btn-danger " to={"/campaign"}>
+                  Back
+                </Link>
+              </div>
+              <div class="col-4 d-flex justify-content-center"></div>
+            </div>
+          </div>
         </>
       );
     } else {
       return (
         <>
-          <h1>Congratulation !! You have won voucher below</h1>
-          <h5>Voucher code: {voucher?.voucherCode}</h5>
-          <h5>Voucher name: {voucher?.voucherName}</h5>
-          <h5>Description: {voucher?.description}</h5>
-          <Link
-            className="btn btn-info "
-            to={`/voucher-detail/${voucher?.voucherId}`}
-          >
-            Go to your voucher
-          </Link>
-          <Link className="btn btn-danger " to={"/campaign"}>
-            Back
-          </Link>
+          <VoucherComponent voucher={voucher} />
         </>
       );
     }
+  };
+
+  const renderLoseGame = () => {
+    return (
+      <>
+        <div class="container mt-5 justify-content-center">
+          <h1 class="d-flex justify-content-center row">
+            Sorry, You lose the game
+          </h1>
+          {correctAnswer && (
+            <>
+              <h4 class="d-flex text-info justify-content-center row">
+                Correct answer is: {correctAnswer}
+              </h4>
+            </>
+          )}
+
+          <div className="row">
+            <div class="col-4 d-flex justify-content-center"></div>
+            <div class="col-4 d-flex justify-content-center">
+              <Link className=" btn btn-danger " to={"/campaign"}>
+                Back
+              </Link>
+            </div>
+            <div class="col-4 d-flex justify-content-center"></div>
+          </div>
+        </div>
+      </>
+    );
   };
 
   const renderGame = () => {
     if (gameInfo?.gameId == 1) {
       return (
         <>
-          <button
-            type="button"
-            class="btn btn-primary btn-lg btn-block"
-            onClick={() => getVoucher()}
-          >
-            Get voucher
-          </button>
+          {/* <ClickGame onCheckAnswer={checkAnswer} /> */}
+          <WordScrambleGame
+            onCheckAnswer={checkAnswer}
+            onSetCorrectAnswer={setCorrectAnswer}
+          />
         </>
       );
-    } else {
+    } else if (gameInfo?.gameId == 4) {
       return (
         <>
-          <ol class="quiz" type="1">
-            <li>
-              <h4>How many letters are there in "JS"?</h4>
-              <ol class="choices" type="A">
-                <li>
-                  <label>
-                    <input type="radio" name="question0" value="A" />
-                    <span>2</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="radio" name="question0" value="B" />
-                    <span>1</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="radio" name="question0" value="C" />
-                    <span>3</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="radio" name="question0" value="D" />
-                    <span>4</span>
-                  </label>
-                </li>
-              </ol>
-            </li>
-            <li>
-              <h4>2 + 3 = ?</h4>
-              <ol class="choices" type="A">
-                <li>
-                  <label>
-                    <input type="radio" name="question1" value="A" />
-                    <span>2</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="radio" name="question1" value="B" />
-                    <span>3</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="radio" name="question1" value="C" />
-                    <span>4</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="radio" name="question1" value="D" />
-                    <span>5</span>
-                  </label>
-                </li>
-              </ol>
-            </li>
-          </ol>
-          <button
-            type="button"
-            class="btn btn-primary btn-lg btn-block"
-            onClick={() => getVoucher()}
-          >
-            Submit
-          </button>
+          <QuizGame
+            onCheckAnswer={checkAnswer}
+            onSetCorrectAnswer={setCorrectAnswer}
+          />
         </>
       );
     }
@@ -193,9 +159,9 @@ const Game = () => {
           <h3>Description: {gameInfo?.description}</h3>
         </>
       )}
-
-      {!isFinished && renderGame()}
+      {!isFinished && isWin && renderGame()}
       {isFinished && renderVoucher()}
+      {!isWin && renderLoseGame()}
     </>
   );
 };

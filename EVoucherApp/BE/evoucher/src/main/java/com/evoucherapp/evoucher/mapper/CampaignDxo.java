@@ -1,7 +1,9 @@
 package com.evoucherapp.evoucher.mapper;
 
+import com.evoucherapp.evoucher.common.constant.CampaignStatus;
 import com.evoucherapp.evoucher.common.constant.DateTimeFormat;
 import com.evoucherapp.evoucher.dto.obj.*;
+import com.evoucherapp.evoucher.dto.obj.statistic.CampaignStatisticDto;
 import com.evoucherapp.evoucher.util.CommonUtil;
 import com.evoucherapp.evoucher.util.DateTimeUtil;
 import com.evoucherapp.evoucher.util.ObjectUtil;
@@ -77,7 +79,6 @@ public class CampaignDxo {
                 dto.getVoucherTemplateDtoList().add(vtDto);
             }
         }
-
         return dto;
     }
 }

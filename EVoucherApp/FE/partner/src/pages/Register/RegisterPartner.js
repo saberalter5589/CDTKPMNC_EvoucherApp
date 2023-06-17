@@ -163,7 +163,7 @@ const RegisterPartner = (props) => {
               <button type="submit" className="btn btn-primary">
                 Create
               </button>
-              <Link className="btn btn-danger " to={"/login"}>
+              <Link className="btn btn-danger " to={"/partner/login"}>
                 Back
               </Link>
             </div>

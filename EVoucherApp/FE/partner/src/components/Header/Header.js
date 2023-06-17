@@ -38,7 +38,7 @@ const Header = (props) => {
             class: "nav-link",
           },
           {
-            to: "/login",
+            to: "admin/login",
             name: "Logout",
             class: "nav-link",
           },
@@ -72,7 +72,12 @@ const Header = (props) => {
             class: "nav-link",
           },
           {
-            to: "/login",
+            to: "/campaign-statistic",
+            name: "Campaign Statistic",
+            class: "nav-link",
+          },
+          {
+            to: "partner/login",
             name: "Logout",
             class: "nav-link",
           },
