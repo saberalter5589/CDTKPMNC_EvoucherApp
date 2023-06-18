@@ -152,7 +152,7 @@ const VoucherTemplateDetail = () => {
         voucherTemplateName: voucherTemplateName ? voucherTemplateName : "",
         amount: amount ? amount : 1,
         description: description ? description : "",
-        description: note ? note : "",
+        note: note ? note : "",
         dateStart: dateStart ? convertFromDateToString(dateStart) : "",
         dateEnd: dateEnd ? convertFromDateToString(dateEnd) : "",
         voucherTypeId: voucherTypeId,

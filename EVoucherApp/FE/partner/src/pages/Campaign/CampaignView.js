@@ -170,11 +170,7 @@ const CampaignView = () => {
                   {gameOptionList?.map((gm) => (
                     <option value={gm?.id}>
                       {`${
-                        gm?.code +
-                        " - " +
-                        gm?.name +
-                        " => description: " +
-                        gm?.description
+                        gm?.code + " - " + gm?.name + " => " + gm?.description
                       }`}
                     </option>
                   ))}

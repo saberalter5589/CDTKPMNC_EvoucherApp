@@ -58,7 +58,6 @@ public class VoucherServiceImpl implements VoucherService {
         Long userId = request.getAuthentication().getUserId();
         CreateVoucherResponse response = new CreateVoucherResponse();
 
-        // TODO: Generate random number and based on that number to get voucher template
         Campaign campaign = campaignRepository.findByCampaignId(request.getCampaignId());
         if(campaign == null || Objects.equals(campaign.getStatus(), CampaignStatus.NOT_START)){
             MessageInfo messageInfo = MessageUtil.formatMessage(10004, "campaignId", "campaign not exist or not in status NOT_START");
@@ -75,7 +74,16 @@ public class VoucherServiceImpl implements VoucherService {
             campaignCustomerRepository.save(campaignCustomer);
         }
 
-        List<VoucherTemplate> templateList = voucherTemplateRepository.findByCampainId(campaign.getCampainId());
+        Long randomNumber = generateRandomNumber(userId, campaign.getCampainId());
+        boolean isPrime = CommonUtil.isPrimeNumber(randomNumber);
+        if(isPrime){
+            VoucherDto dto = new VoucherDto();
+            dto.setVoucherId(-1L);
+            response.setVoucher(dto);
+            return response;
+        }
+
+        List<VoucherTemplate> templateList = voucherTemplateRepository.getVoucherTemplateRandom(campaign.getCampainId());
         if(CommonUtil.isNullOrEmpty(templateList)){
             VoucherDto dto = new VoucherDto();
             dto.setVoucherId(-1L);
@@ -83,11 +91,20 @@ public class VoucherServiceImpl implements VoucherService {
             return response;
         }
 
-        // TODO: temporarily get first template
-        // TODO: if max exceed max mount, return
-        VoucherTemplate voucherTemplate = templateList.get(0);
-        String randomCode = voucherTemplate.getVoucherTemplateCode() + "_" + RandomStringUtils.randomAlphanumeric(10);
+        VoucherTemplate voucherTemplate = null;
+        for(long i = 0; i < randomNumber; i++){
+            long curIndex = i % templateList.size();
+            voucherTemplate = templateList.get((int) curIndex);
+        }
 
+        if(voucherTemplate == null){
+            VoucherDto dto = new VoucherDto();
+            dto.setVoucherId(-1L);
+            response.setVoucher(dto);
+            return response;
+        }
+
+        String randomCode = voucherTemplate.getVoucherTemplateCode() + "_" + RandomStringUtils.randomAlphanumeric(10).toUpperCase();
         Voucher voucher = new Voucher();
         voucher.setCustomerId(userId);
         voucher.setVoucherTemplateId(voucherTemplate.getVoucherTemplateId());
@@ -138,5 +155,11 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setIsUsed(true);
         EntityDxo.preUpdate(userId, voucher);
         voucherRepository.save(voucher);
+    }
+
+    private Long generateRandomNumber(Long userId, Long campainId){
+        long unixTime = System.currentTimeMillis() / 1000L;
+        long twoNum = unixTime % 100;
+        return twoNum + userId + campainId;
     }
 }

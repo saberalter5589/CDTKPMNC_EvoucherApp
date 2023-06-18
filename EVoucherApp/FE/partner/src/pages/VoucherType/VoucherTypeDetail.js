@@ -111,7 +111,7 @@ const VoucherTypeDetail = () => {
               <div className="row">
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Partner Type Name</label>
+                    <label>Voucher Type Name</label>
                     <input
                       value={voucherTypeName}
                       onChange={(e) => setVoucherTypeName(e.target.value)}

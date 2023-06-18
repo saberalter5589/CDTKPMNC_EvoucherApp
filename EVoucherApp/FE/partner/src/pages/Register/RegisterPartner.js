@@ -51,7 +51,7 @@ const RegisterPartner = (props) => {
     );
     if (res.status == 200) {
       toast.success("Success");
-      navigate("/login");
+      navigate("/partner/login");
     }
   };
   return (

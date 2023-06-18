@@ -165,7 +165,7 @@ const CustomerDetail = () => {
                     <label>Phone</label>
                     <input
                       value={phone}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => setPhone(e.target.value)}
                       className="form-control"
                     ></input>
                   </div>

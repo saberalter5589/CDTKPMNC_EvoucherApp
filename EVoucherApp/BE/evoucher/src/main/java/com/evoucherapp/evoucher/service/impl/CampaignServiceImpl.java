@@ -72,7 +72,7 @@ public class CampaignServiceImpl implements CampaignService {
         newCampaign.setDateEnd(dateEnd);
         newCampaign.setDescription(request.getDescription());
         newCampaign.setNote(request.getNote());
-        newCampaign.setStatus(CampaignStatus.NOT_START);
+        newCampaign.setStatus(request.getStatus() == null ? CampaignStatus.NOT_START : request.getStatus());
         newCampaign.setIsDeleted(false);
         EntityDxo.preCreate(partnerId, newCampaign);
         campaignRepository.save(newCampaign);

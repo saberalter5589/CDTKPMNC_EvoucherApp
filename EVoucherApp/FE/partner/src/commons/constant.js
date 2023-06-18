@@ -26,6 +26,24 @@ export const WordScrambleQuestion = [
     hint: "This is a name of a tropical fruit that is often considered king of fruit",
     correct: "DURIAN",
   },
+  {
+    id: 3,
+    scrambledWord: "A Z P Z I",
+    hint: "This is a name of a cuisine originated from Italy?",
+    correct: "PIZZA",
+  },
+  {
+    id: 4,
+    scrambledWord: "R H I M E Y C S T",
+    hint: "This is a name of a subject in High school that involves studying of chemicals?",
+    correct: "CHEMISTRY",
+  },
+  {
+    id: 5,
+    scrambledWord: " H Y C S G O O Y P L",
+    hint: "This is a name of a social science that study human's mind and behavior",
+    correct: "PSYCHOLOGY",
+  },
 ];
 
 export const QuizGameQuestions = [
@@ -98,6 +116,78 @@ export const QuizGameQuestions = [
       {
         value: "D",
         content: "Campuchia",
+      },
+    ],
+  },
+  {
+    quizId: 3,
+    question: "Việt Nam có bao nhiêu tỉnh thành?",
+    correct: "A",
+    correctAnswer: "63",
+    answers: [
+      {
+        value: "A",
+        content: "63",
+      },
+      {
+        value: "B",
+        content: "64",
+      },
+      {
+        value: "C",
+        content: "65",
+      },
+      {
+        value: "D",
+        content: "66",
+      },
+    ],
+  },
+  {
+    quizId: 4,
+    question: "Tỉnh thành nào sao đây thuộc vùng Tây Nguyên?",
+    correct: "D",
+    correctAnswer: "Lâm Đồng",
+    answers: [
+      {
+        value: "A",
+        content: "Bến Tre",
+      },
+      {
+        value: "B",
+        content: "Ninh Thuận",
+      },
+      {
+        value: "C",
+        content: "Hà Tĩnh",
+      },
+      {
+        value: "D",
+        content: "Lâm Đồng",
+      },
+    ],
+  },
+  {
+    quizId: 5,
+    question: "Con sông nào sau đây thuộc châu Phi?",
+    correct: "C",
+    correctAnswer: "Sông Nile",
+    answers: [
+      {
+        value: "A",
+        content: "Sông Mekong",
+      },
+      {
+        value: "B",
+        content: "Sông Dương Tử",
+      },
+      {
+        value: "C",
+        content: "Sông Nile",
+      },
+      {
+        value: "D",
+        content: "Sông Đà",
       },
     ],
   },

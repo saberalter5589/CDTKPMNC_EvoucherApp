@@ -102,7 +102,7 @@ const Header = (props) => {
           },
           {
             to: "/voucher",
-            name: "Voucher",
+            name: "My Vouchers",
             class: "nav-link",
           },
           {

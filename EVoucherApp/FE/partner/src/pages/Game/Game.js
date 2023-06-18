@@ -132,17 +132,22 @@ const Game = () => {
     if (gameInfo?.gameId == 1) {
       return (
         <>
-          {/* <ClickGame onCheckAnswer={checkAnswer} /> */}
-          <WordScrambleGame
+          <ClickGame onCheckAnswer={checkAnswer} />
+        </>
+      );
+    } else if (gameInfo?.gameId == 2) {
+      return (
+        <>
+          <QuizGame
             onCheckAnswer={checkAnswer}
             onSetCorrectAnswer={setCorrectAnswer}
           />
         </>
       );
-    } else if (gameInfo?.gameId == 4) {
+    } else if (gameInfo?.gameId == 3) {
       return (
         <>
-          <QuizGame
+          <WordScrambleGame
             onCheckAnswer={checkAnswer}
             onSetCorrectAnswer={setCorrectAnswer}
           />

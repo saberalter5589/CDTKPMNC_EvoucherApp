@@ -27,7 +27,7 @@ const VoucherComponent = (props) => {
                 </div>
                 <div class="d-flex flex-row align-items-center question-title">
                   <h3 class="text-danger">Description:&nbsp;&nbsp;&nbsp;</h3>
-                  <h5 class="mt-1 ml-2"></h5>
+                  <h5 class="mt-1 ml-2">{voucher?.description}</h5>
                 </div>
               </div>
               <div class="d-flex flex-row justify-content-between align-items-center p-3 bg-white">

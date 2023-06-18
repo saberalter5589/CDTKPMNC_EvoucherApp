@@ -16,7 +16,6 @@ function isoDateWithoutTimeZone(date) {
   if (date == null) return date;
   var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
   var correctDate = new Date(timestamp);
-  // correctDate.setUTCHours(0, 0, 0, 0); // uncomment this if you want to remove the time
   return correctDate.toISOString();
 }
 

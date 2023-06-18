@@ -185,7 +185,13 @@ const Voucher = () => {
                   <td>{voucher?.voucherCode}</td>
                   <td>{voucher?.voucherName}</td>
                   <td>{voucher?.partner?.partnerName}</td>
-                  <td>{voucher?.isUsed ? "Is Used" : "Not Used"}</td>
+                  <td
+                    style={
+                      voucher?.isUsed ? { color: "red" } : { color: "blue" }
+                    }
+                  >
+                    {voucher?.isUsed ? "Is Used" : "Not Used"}
+                  </td>
                   <td>
                     <Link
                       className="btn btn-success"
